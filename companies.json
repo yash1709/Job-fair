@@ -1472,6 +1472,11 @@
   "slug": "escape"
  },
  {
+  "name": "Event Horizon Labs",
+  "ats": "ashby",
+  "slug": "event-horizon-labs"
+ },
+ {
   "name": "Eventual",
   "ats": "ashby",
   "slug": "eventual"
@@ -2015,9 +2020,19 @@
   "india_only": true
  },
  {
+  "name": "Hatch",
+  "ats": "ashby",
+  "slug": "hatch"
+ },
+ {
   "name": "Haven",
   "ats": "greenhouse",
   "slug": "haven"
+ },
+ {
+  "name": "Headstart",
+  "ats": "ashby",
+  "slug": "headstart"
  },
  {
   "name": "HealthSherpa",
@@ -2168,6 +2183,11 @@
   "name": "Infera",
   "ats": "ashby",
   "slug": "infera"
+ },
+ {
+  "name": "Infinite",
+  "ats": "ashby",
+  "slug": "infinite"
  },
  {
   "name": "Infisical",
@@ -3208,6 +3228,11 @@
   "slug": "output"
  },
  {
+  "name": "Outschool",
+  "ats": "ashby",
+  "slug": "outschool"
+ },
+ {
   "name": "Outset",
   "ats": "ashby",
   "slug": "outset"
@@ -3281,6 +3306,11 @@
   "name": "Parker",
   "ats": "ashby",
   "slug": "parker"
+ },
+ {
+  "name": "Pax Historia",
+  "ats": "ashby",
+  "slug": "pax-historia"
  },
  {
   "name": "PayPal",
@@ -3382,6 +3412,11 @@
   "name": "Pinterest",
   "ats": "greenhouse",
   "slug": "pinterest"
+ },
+ {
+  "name": "Pipekit",
+  "ats": "ashby",
+  "slug": "pipekit"
  },
  {
   "name": "Pirros",
@@ -4489,6 +4524,11 @@
   "name": "Tennr",
   "ats": "ashby",
   "slug": "tennr"
+ },
+ {
+  "name": "Tenor",
+  "ats": "ashby",
+  "slug": "tenor"
  },
  {
   "name": "Terminal",
