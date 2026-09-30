@@ -77,11 +77,6 @@
   "slug": "affirm"
  },
  {
-  "name": "Affle 3i Limited",
-  "ats": "greenhouse",
-  "slug": "affle"
- },
- {
   "name": "AfterQuery",
   "ats": "ashby",
   "slug": "afterquery"
@@ -180,11 +175,6 @@
   "name": "Amazon",
   "ats": "amazon",
   "slug": "amazon"
- },
- {
-  "name": "Amber Enterprises India Limited",
-  "ats": "ashby",
-  "slug": "amber"
  },
  {
   "name": "Ambition",
@@ -289,11 +279,6 @@
   "slug": "archil"
  },
  {
-  "name": "Aries Agro Limited",
-  "ats": "ashby",
-  "slug": "aries"
- },
- {
   "name": "Arini",
   "ats": "ashby",
   "slug": "arini"
@@ -325,11 +310,6 @@
   "slug": "arrow/wd1/AC"
  },
  {
-  "name": "Artefact",
-  "ats": "greenhouse",
-  "slug": "artefact"
- },
- {
   "name": "Artie",
   "ats": "ashby",
   "slug": "artie"
@@ -348,11 +328,6 @@
   "name": "Ashby",
   "ats": "ashby",
   "slug": "ashby"
- },
- {
-  "name": "Ashoka Buildcon Limited",
-  "ats": "lever",
-  "slug": "ashoka"
  },
  {
   "name": "Asimov",
@@ -597,11 +572,6 @@
   "slug": "block"
  },
  {
-  "name": "Bloom",
-  "ats": "lever",
-  "slug": "bloom"
- },
- {
   "name": "Blue",
   "ats": "lever",
   "slug": "blue"
@@ -707,11 +677,6 @@
   "slug": "cambly"
  },
  {
-  "name": "Campus Activewear Limited",
-  "ats": "ashby",
-  "slug": "campus"
- },
- {
   "name": "Capital One",
   "ats": "workday",
   "slug": "capitalone/wd12/Capital_One"
@@ -795,11 +760,6 @@
   "name": "Cedar",
   "ats": "ashby",
   "slug": "cedar"
- },
- {
-  "name": "Cello World Limited",
-  "ats": "ashby",
-  "slug": "cello"
  },
  {
   "name": "Celonis",
@@ -894,11 +854,6 @@
   "slug": "citi/wd5/2"
  },
  {
-  "name": "Citizen",
-  "ats": "ashby",
-  "slug": "citizen"
- },
- {
   "name": "Claim Health",
   "ats": "ashby",
   "slug": "claim-health"
@@ -907,11 +862,6 @@
   "name": "ClaimSorted",
   "ats": "ashby",
   "slug": "claimsorted"
- },
- {
-  "name": "Clara",
-  "ats": "greenhouse",
-  "slug": "clara"
  },
  {
   "name": "Clario",
@@ -1147,11 +1097,6 @@
   "slug": "coursera"
  },
  {
-  "name": "Craftsman Automation Limited",
-  "ats": "greenhouse",
-  "slug": "craftsman"
- },
- {
   "name": "Craze",
   "ats": "ashby",
   "slug": "craze"
@@ -1190,11 +1135,6 @@
   "name": "Culture Amp",
   "ats": "greenhouse",
   "slug": "cultureamp"
- },
- {
-  "name": "Current",
-  "ats": "greenhouse",
-  "slug": "current"
  },
  {
   "name": "Curri",
@@ -1280,11 +1220,6 @@
   "name": "Deputy",
   "ats": "lever",
   "slug": "deputy"
- },
- {
-  "name": "Devine",
-  "ats": "greenhouse",
-  "slug": "devine"
  },
  {
   "name": "DevRev",
@@ -1790,11 +1725,6 @@
   "slug": "focal"
  },
  {
-  "name": "Focus Lighting and Fixtures Limited",
-  "ats": "ashby",
-  "slug": "focus"
- },
- {
   "name": "Formal",
   "ats": "ashby",
   "slug": "formal"
@@ -1849,11 +1779,6 @@
   "name": "Gartner",
   "ats": "workday",
   "slug": "gartner/wd5/EXT"
- },
- {
-  "name": "Gateway Distriparks Limited",
-  "ats": "greenhouse",
-  "slug": "gateway"
  },
  {
   "name": "GE Aerospace",
@@ -1988,16 +1913,6 @@
   "slug": "grai"
  },
  {
-  "name": "Graphite India Limited",
-  "ats": "ashby",
-  "slug": "graphite"
- },
- {
-  "name": "Gravity",
-  "ats": "greenhouse",
-  "slug": "gravity"
- },
- {
   "name": "Greenboard",
   "ats": "ashby",
   "slug": "greenboard"
@@ -2120,11 +2035,6 @@
   "slug": "headstart"
  },
  {
-  "name": "Healthaxis",
-  "ats": "ashby",
-  "slug": "healthaxis"
- },
- {
   "name": "HealthSherpa",
   "ats": "ashby",
   "slug": "healthsherpa"
@@ -2143,11 +2053,6 @@
   "name": "HelloFresh",
   "ats": "greenhouse",
   "slug": "hellofresh"
- },
- {
-  "name": "Hercules",
-  "ats": "ashby",
-  "slug": "hercules"
  },
  {
   "name": "Hevo Data",
@@ -2198,11 +2103,6 @@
   "name": "Hopper",
   "ats": "ashby",
   "slug": "hopper"
- },
- {
-  "name": "Horizon",
-  "ats": "lever",
-  "slug": "horizon"
  },
  {
   "name": "Hotplate",
@@ -2300,11 +2200,6 @@
   "slug": "influxdata"
  },
  {
-  "name": "Infomedia Press Limited",
-  "ats": "greenhouse",
-  "slug": "infomedia"
- },
- {
   "name": "Ingram Micro",
   "ats": "workday",
   "slug": "ingrammicro/wd5/ingrammicro"
@@ -2348,11 +2243,6 @@
   "name": "Interfere",
   "ats": "ashby",
   "slug": "interfere"
- },
- {
-  "name": "InterGlobe Aviation Limited",
-  "ats": "ashby",
-  "slug": "indigo"
  },
  {
   "name": "InterviewBit",
@@ -2448,11 +2338,6 @@
   "name": "Kaplan",
   "ats": "workday",
   "slug": "ghc/wd1/Kaplan_Careers"
- },
- {
-  "name": "Karbon",
-  "ats": "greenhouse",
-  "slug": "karbon"
  },
  {
   "name": "Kaseya",
@@ -2573,11 +2458,6 @@
   "slug": "laika"
  },
  {
-  "name": "Lakeshore",
-  "ats": "smartrecruiters",
-  "slug": "lakeshore"
- },
- {
   "name": "Lance",
   "ats": "ashby",
   "slug": "lance"
@@ -2586,11 +2466,6 @@
   "name": "LanceDB",
   "ats": "ashby",
   "slug": "lancedb"
- },
- {
-  "name": "Landmark Cars Limited",
-  "ats": "greenhouse",
-  "slug": "landmark"
  },
  {
   "name": "Langdock",
@@ -2671,11 +2546,6 @@
   "slug": "limrun"
  },
  {
-  "name": "Lincoln Pharmaceuticals Limited",
-  "ats": "greenhouse",
-  "slug": "lincoln"
- },
- {
   "name": "Linear",
   "ats": "ashby",
   "slug": "linear"
@@ -2725,11 +2595,6 @@
   "name": "Loula",
   "ats": "ashby",
   "slug": "loula"
- },
- {
-  "name": "Lovable Lingerie Limited",
-  "ats": "ashby",
-  "slug": "lovable"
  },
  {
   "name": "Lowe's",
@@ -2922,11 +2787,6 @@
   "slug": "metriport"
  },
  {
-  "name": "Metropolis Healthcare Limited",
-  "ats": "greenhouse",
-  "slug": "metropolis"
- },
- {
   "name": "Microchip",
   "ats": "workday",
   "slug": "microchiphr/wd5/External"
@@ -3108,11 +2968,6 @@
   "slug": "neo4j"
  },
  {
-  "name": "Neptune",
-  "ats": "ashby",
-  "slug": "neptune"
- },
- {
   "name": "Netflix",
   "ats": "workday",
   "slug": "netflix/wd108/Netflix"
@@ -3211,11 +3066,6 @@
   "slug": "nubank"
  },
  {
-  "name": "Nucleus Software Exports Limited",
-  "ats": "greenhouse",
-  "slug": "nucleus"
- },
- {
   "name": "Numeral",
   "ats": "ashby",
   "slug": "numeral"
@@ -3231,11 +3081,6 @@
   "slug": "observeai"
  },
  {
-  "name": "Octave",
-  "ats": "greenhouse",
-  "slug": "octave"
- },
- {
   "name": "Odeko",
   "ats": "greenhouse",
   "slug": "odeko"
@@ -3249,11 +3094,6 @@
   "name": "Odys Aviation",
   "ats": "ashby",
   "slug": "odys-aviation"
- },
- {
-  "name": "Odyssey",
-  "ats": "ashby",
-  "slug": "odyssey"
  },
  {
   "name": "OffDeal",
@@ -3315,11 +3155,6 @@
   "ats": "greenhouse",
   "slug": "onetrust",
   "india_only": true
- },
- {
-  "name": "Ontic",
-  "ats": "ashby",
-  "slug": "ontic"
  },
  {
   "name": "Onyx",
@@ -3471,11 +3306,6 @@
   "name": "Parker",
   "ats": "ashby",
   "slug": "parker"
- },
- {
-  "name": "Parkerac",
-  "ats": "greenhouse",
-  "slug": "parkerac"
  },
  {
   "name": "Pax Historia",
@@ -3840,11 +3670,6 @@
   "slug": "rackspace/wd1/External"
  },
  {
-  "name": "Raconteur",
-  "ats": "greenhouse",
-  "slug": "raconteur"
- },
- {
   "name": "RADAR",
   "ats": "ashby",
   "slug": "radar"
@@ -4035,11 +3860,6 @@
   "slug": "roofr"
  },
  {
-  "name": "ROUTE MOBILE LIMITED",
-  "ats": "greenhouse",
-  "slug": "route"
- },
- {
   "name": "RTX",
   "ats": "workday",
   "slug": "globalhr/wd5/REC_RTX_Ext_Gateway"
@@ -4093,11 +3913,6 @@
   "name": "Sage Care",
   "ats": "ashby",
   "slug": "sagecare"
- },
- {
-  "name": "Sahara",
-  "ats": "ashby",
-  "slug": "sahara"
  },
  {
   "name": "SailPoint",
@@ -4233,11 +4048,6 @@
   "name": "SigNoz",
   "ats": "ashby",
   "slug": "signoz"
- },
- {
-  "name": "Signpost India Limited",
-  "ats": "greenhouse",
-  "slug": "signpost"
  },
  {
   "name": "Sila",
@@ -4390,11 +4200,6 @@
   "slug": "sorcerer"
  },
  {
-  "name": "South West Pinnacle Exploration Limited",
-  "ats": "smartrecruiters",
-  "slug": "southwest"
- },
- {
   "name": "Spade",
   "ats": "ashby",
   "slug": "spade"
@@ -4403,11 +4208,6 @@
   "name": "Speak",
   "ats": "ashby",
   "slug": "speak"
- },
- {
-  "name": "Spectrum Electrical Industries Limited",
-  "ats": "greenhouse",
-  "slug": "spectrum"
  },
  {
   "name": "Speechify",
@@ -4562,16 +4362,6 @@
   "slug": "supabase"
  },
  {
-  "name": "Super",
-  "ats": "greenhouse",
-  "slug": "super"
- },
- {
-  "name": "Superior",
-  "ats": "greenhouse",
-  "slug": "superior"
- },
- {
   "name": "Superset",
   "ats": "greenhouse",
   "slug": "superset"
@@ -4580,11 +4370,6 @@
   "name": "Superside",
   "ats": "lever",
   "slug": "superside"
- },
- {
-  "name": "Supreme Holdings & Hospitality (India) Limited",
-  "ats": "greenhouse",
-  "slug": "supreme"
  },
  {
   "name": "SurveyMonkey",
@@ -4796,11 +4581,6 @@
   "slug": "thoughtworks"
  },
  {
-  "name": "Thrive",
-  "ats": "greenhouse",
-  "slug": "thrive"
- },
- {
   "name": "Thunkable",
   "ats": "lever",
   "slug": "thunkable"
@@ -4936,11 +4716,6 @@
   "name": "Ultra",
   "ats": "ashby",
   "slug": "ultra"
- },
- {
-  "name": "Unified",
-  "ats": "greenhouse",
-  "slug": "unified"
  },
  {
   "name": "Unify",
