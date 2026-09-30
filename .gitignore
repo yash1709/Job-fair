@@ -1,0 +1,19 @@
+# Secrets - never commit
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# IDE
+.idea/
+
+# Local output
+*.csv
+*.json.bak
+jobs.csv
+
+# OS
+.DS_Store
+Thumbs.db
