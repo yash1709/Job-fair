@@ -1,1 +1,7 @@
-{}
+{
+ "acc": {
+  "ats": "greenhouse",
+  "jobs": 3,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ }
+}
