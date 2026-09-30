@@ -227,6 +227,30 @@ Downloading everything takes ~9 minutes (Workday returns 20 jobs per request): t
 at startup and refreshes hourly; searches meanwhile use whatever has loaded, with a notice. On the command line, use
 `--sources` without `careers` for quick searches, since each run downloads all boards.
 
+### Keeping `companies.json` growing (`discover.py`)
+
+`companies.json` is otherwise a frozen snapshot: a company with no jobs today that opens a board next month would
+never be noticed, since the app only ever re-fetches boards already on the list. `discover.py` is the other half -
+it rechecks Y Combinator's full company directory (`yc_candidates.json`, ~6,270 companies) for ones that have
+*newly* opened a Greenhouse/Lever/Ashby board, and adds them.
+
+This is deliberately **not** part of the live app: checking thousands of candidates takes 1-2+ hours, far too slow
+and too much load for an hourly refresh or a visitor's request to wait on. Instead, `.github/workflows/discover-
+companies.yml` runs it on a schedule (weekly, Sundays) via GitHub Actions, and commits anything new straight to
+`companies.json` - which Streamlit Community Cloud then picks up on its automatic redeploy. Run it manually too:
+
+```powershell
+python discover.py                       # check all untracked YC candidates against Greenhouse/Lever/Ashby
+python discover.py --refresh-candidates  # also re-fetch yc_candidates.json from YC's sitemap first (picks up new YC companies)
+python discover.py --limit 500           # check only the first 500 untracked candidates, for a quicker test run
+```
+
+**Collision safety.** The same literal slug can belong to a completely unrelated company on the same ATS (e.g.
+Bird Rides' Greenhouse board isn't YC's Bird, a messaging company). `yc_excluded.json` is a manually-curated list
+of confirmed collisions found this way, so they're never re-added. Short slugs (under 5 characters) are where
+this happens - common English words are more likely to already be claimed by someone else - so a new hit that
+short is written to `yc_needs_review.json` for a human to check, instead of being auto-added.
+
 ## Posted date
 
 "Posted within" filters every source, not only Google. Dates come from the source (exact timestamps for most;
