@@ -231,8 +231,16 @@ at startup and refreshes hourly; searches meanwhile use whatever has loaded, wit
 
 `companies.json` is otherwise a frozen snapshot: a company with no jobs today that opens a board next month would
 never be noticed, since the app only ever re-fetches boards already on the list. `discover.py` is the other half -
-it rechecks Y Combinator's full company directory (`yc_candidates.json`, ~6,270 companies) for ones that have
-*newly* opened a Greenhouse/Lever/Ashby board, and adds them.
+it checks two candidate pools for ones that have *newly* opened a Greenhouse/Lever/Ashby/SmartRecruiters board,
+and adds them:
+
+- **YC** (`yc_candidates.json`, ~6,270 companies) - Y Combinator's full company directory. Startups here are heavy
+  adopters of exactly the ATS platforms this app reads, so this pool has a good hit rate.
+- **NSE/BSE** (`nse_candidates.json`, ~5,460 companies) - every stock listed on 5paisa (https://www.5paisa.com/stocks/all),
+  i.e. essentially every Indian publicly-listed company. A much bigger, much lower-hit-rate pool - most large listed
+  Indian corporates use in-house or enterprise HR systems this app doesn't read - but a real fraction do use a
+  supported ATS. Official display names come from NSE's own symbol list (`nse_names.json`); BSE-only tickers not in
+  that list fall back to a title-cased version of the slug.
 
 This is deliberately **not** part of the live app: checking thousands of candidates takes 1-2+ hours, far too slow
 and too much load for an hourly refresh or a visitor's request to wait on. Instead, `.github/workflows/discover-
@@ -240,23 +248,27 @@ companies.yml` runs it on a schedule (weekly, Sundays) via GitHub Actions, and c
 `companies.json` - which Streamlit Community Cloud then picks up on its automatic redeploy. Run it manually too:
 
 ```powershell
-python discover.py                       # check all untracked YC candidates against Greenhouse/Lever/Ashby
-python discover.py --refresh-candidates  # also re-fetch yc_candidates.json from YC's sitemap first (picks up new YC companies)
-python discover.py --limit 500           # check only the first 500 untracked candidates, for a quicker test run
+python discover.py                       # check all untracked candidates in both pools
+python discover.py --refresh-candidates  # also re-fetch both candidate lists from source first
+python discover.py --sources yc          # only check one pool (or --sources nse)
+python discover.py --limit 500           # check only the first 500 untracked candidates per pool, for a quicker test run
 ```
 
 **Collision safety.** The same literal slug can belong to a completely unrelated company on the same ATS (e.g.
-Bird Rides' Greenhouse board isn't YC's Bird, a messaging company). `yc_excluded.json` is a manually-curated list
-of confirmed collisions found this way, so they're never re-added. Short slugs (under 5 characters) are where
-this happens - common English words are more likely to already be claimed by someone else - so a new hit that
-short is written to `yc_needs_review.json` for a human to check, instead of being auto-added.
+Bird Rides' Greenhouse board isn't YC's Bird, a messaging company). `yc_excluded.json` / `nse_excluded.json` are
+manually-curated lists of confirmed collisions found this way, so they're never re-added. Short slugs (under 5
+characters) are where this happens most - common English words are more likely to already be claimed by someone
+else - so a new hit that short is written to `yc_needs_review.json` / `nse_needs_review.json` for a human to check,
+instead of being auto-added. A hit is also skipped outright (no review needed) if nothing on the board was posted
+in the last ~400 days - probing NSE tickers surfaced a real case of this: a single 2022 SmartRecruiters posting
+for an unrelated small company that happened to share a ticker's slug, long since abandoned.
 
 ### Removing companies that stopped hiring (`prune.py`)
 
 The mirror image of `discover.py`: nothing above ever *removes* a company, so one that's stopped hiring would sit
 in `companies.json` forever, costing an hourly fetch for nothing. `prune.py` rechecks every company already
 tracked, and any with **no jobs for 3 consecutive daily runs** is moved out of `companies.json` into
-`pruned_companies.json`. `discover.py` rechecks that file every run too (alongside the YC candidate pool), so a
+`pruned_companies.json`. `discover.py` rechecks that file every run too (alongside both candidate pools), so a
 company that starts hiring again later is added straight back automatically - nothing is lost, just set aside
 while it isn't useful. Runs daily via `.github/workflows/prune-companies.yml`.
 

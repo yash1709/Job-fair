@@ -26,6 +26,12 @@ def sandbox(tmp_path, monkeypatch):
     monkeypatch.setattr(prune, "PRUNED_FILE", tmp_path / "pruned_companies.json")
     monkeypatch.setattr(discover, "PRUNED_FILE", tmp_path / "pruned_companies.json")
     monkeypatch.setattr(careers, "COMPANIES_FILE", tmp_path / "companies.json")
+    # Point the NSE pool at empty temp files too, so a bare discover.main() call in a test never hits the
+    # real, populated nse_candidates.json or makes a live network probe against thousands of tickers.
+    monkeypatch.setattr(discover, "NSE_CANDIDATES_FILE", tmp_path / "nse_candidates.json")
+    (tmp_path / "nse_candidates.json").write_text("[]", encoding="utf-8")
+    monkeypatch.setattr(discover, "NSE_EXCLUDED_FILE", tmp_path / "nse_excluded.json")
+    monkeypatch.setattr(discover, "NSE_REVIEW_FILE", tmp_path / "nse_needs_review.json")
     return tmp_path
 
 

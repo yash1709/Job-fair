@@ -10,7 +10,11 @@ on:
   workflow_dispatch:      # also runnable manually from the Actions tab
     inputs:
       limit:
-        description: "Only check this many untracked candidates (for a quick test run - leave empty for the real, full check)"
+        description: "Only check this many untracked candidates per pool (for a quick test run - leave empty for the real, full check)"
+        required: false
+        type: string
+      sources:
+        description: "Comma list of candidate pools to check: yc, nse (leave empty for both)"
         required: false
         type: string
 
@@ -20,7 +24,7 @@ permissions:
 jobs:
   discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,16 +33,15 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Run discover.py
         run: |
-          if [ -n "${{ inputs.limit }}" ]; then
-            python discover.py --refresh-candidates --limit "${{ inputs.limit }}"
-          else
-            python discover.py --refresh-candidates
-          fi
+          args="--refresh-candidates"
+          if [ -n "${{ inputs.limit }}" ]; then args="$args --limit ${{ inputs.limit }}"; fi
+          if [ -n "${{ inputs.sources }}" ]; then args="$args --sources ${{ inputs.sources }}"; fi
+          python discover.py $args
       - name: Commit and push if companies.json changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add companies.json yc_candidates.json yc_needs_review.json
+          git add companies.json yc_candidates.json yc_needs_review.json nse_candidates.json nse_needs_review.json nse_names.json
           if git diff --cached --quiet; then
             echo "Nothing new found"
             exit 0
