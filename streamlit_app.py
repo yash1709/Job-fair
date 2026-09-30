@@ -40,7 +40,7 @@ import quota
 import stats
 import store
 from job_scraper import (DATE_WINDOWS, JOB_TYPES, LEVELS, SORTS, SOURCES, fmt_exp, fmt_posted, fmt_salary,
-                         fmt_type, is_india, search_jobs, slugify, sort_jobs, write_csv)
+                         fmt_type, is_india, linkedin_company_url, search_jobs, slugify, sort_jobs, write_csv)
 
 st.set_page_config(page_title="Job Scraper", page_icon="🔍", layout="wide")
 
@@ -162,7 +162,8 @@ with tab_search:
         job_type = c7.multiselect("Job type", JOB_TYPES, format_func=str.capitalize,
                                   default=["full-time", "internship"],  # "all" by default; not "remote" too,
                                   help="Full-time / Internship are alternatives; Remote narrows either")  # that would narrow, not include-all
-        date = c8.selectbox("Posted within", [""] + list(DATE_WINDOWS), format_func=lambda v: DATE_WINDOWS.get(v, "Any time"))
+        date = c8.selectbox("Posted within", list(DATE_WINDOWS) + [""], index=0,  # "d1" first -> selected by default
+                            format_func=lambda v: DATE_WINDOWS.get(v, "Any time"))
 
         sources = st.multiselect("Sources", list(SOURCES), default=list(SOURCES))
         cchk1, cchk2 = st.columns(2)
@@ -234,7 +235,8 @@ with tab_search:
                 rows.append(
                     f'<tr class="{"hidden-row" if "hidden" in acts else ""}">'
                     f"<td><a href='{j.url}' target='_blank' rel='noopener'>{j.title}</a></td>"
-                    f"<td>{j.company}</td><td>{j.location}</td><td>{fmt_exp(j)}</td>"
+                    f"<td>{j.company} <a href='{linkedin_company_url(j.company)}' target='_blank' rel='noopener' "
+                    f"class='muted' title='Find {j.company} on LinkedIn'>in</a></td><td>{j.location}</td><td>{fmt_exp(j)}</td>"
                     f"<td style='white-space:nowrap'>{fmt_salary(j, cur)}</td><td>{tags or '-'}</td>"
                     f"<td class='muted' title='{j.posted}'>{fmt_posted(j)}</td><td class='muted'>{j.source}</td>"
                     f"<td class='rowact'>{row_actions}</td></tr>"

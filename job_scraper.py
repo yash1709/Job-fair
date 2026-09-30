@@ -28,6 +28,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field
 from functools import lru_cache
 from datetime import datetime, timedelta, timezone
+from urllib.parse import quote_plus
 
 import requests
 
@@ -369,8 +370,7 @@ def fmt_salary(j: Job, currency: str | None = None) -> str:
 # ---------------------------------------------------------------------------
 
 # Same codes as Google's dateRestrict, so one setting drives both.
-DATE_WINDOWS = {"d1": "Last 24 hours", "d2": "Last 2 days", "d3": "Last 3 days", "d7": "Last 7 days",
-                "w2": "Last 2 weeks", "m1": "Last month", "m3": "Last 3 months"}
+DATE_WINDOWS = {"d1": "Last 24 hours", "d2": "Last 2 days", "d3": "Last 3 days", "d7": "Last 7 days"}
 _WINDOW_UNIT_DAYS = {"d": 1, "w": 7, "m": 30, "y": 365}
 
 
@@ -532,7 +532,7 @@ def _fuzzy_key(job: Job) -> tuple[str, str, str] | None:
 
 def google_search(role: str, experience: str | None, locations: list[str],
                   max_results: int = 50, country_code: str | None = None,
-                  date_restrict: str | None = "m1") -> list[Job]:
+                  date_restrict: str | None = None) -> list[Job]:
     """Google Custom Search JSON API. Needs GOOGLE_API_KEY and GOOGLE_CSE_ID."""
     key, cx = os.getenv("GOOGLE_API_KEY"), os.getenv("GOOGLE_CSE_ID")
     if not key or not cx:
@@ -1050,7 +1050,7 @@ def search_jobs(role: str, experience: str | None = None, location: str | None =
                 salary_only: bool = False, job_types: list[str] | None = None) -> list[Job]:
     """min/max_salary are annual amounts in `currency` ('12 LPA', '80k', 1200000 all work).
     currency defaults to INR for Indian locations, USD otherwise.
-    date_restrict ('d1', 'd7', 'w2', 'm1', 'm3') limits every source by posted date, not just Google."""
+    date_restrict ('d1', 'd2', 'd3', 'd7') limits every source by posted date, not just Google."""
     sources = sources or list(SOURCES)
     exp_range = parse_experience_arg(experience)
     locations = [l.strip() for l in (location or "").split(",") if l.strip()]
@@ -1166,6 +1166,13 @@ def fmt_type(j: Job) -> str:
     return " · ".join(parts) or "-"
 
 
+def linkedin_company_url(company: str) -> str:
+    """LinkedIn has no free API for exact company-page lookup, and vanity slugs (linkedin.com/company/<slug>)
+    aren't reliably guessable from a name, so this points to LinkedIn's own company search pre-filled with
+    the name instead - works for every company, with no API key, no scraping, and no rate limit."""
+    return f"https://www.linkedin.com/search/results/companies/?keywords={quote_plus(company)}"
+
+
 def print_table(jobs: list[Job]) -> None:
     def cut(s, n):
         return s if len(s) <= n else s[: n - 1] + "…"
@@ -1185,7 +1192,7 @@ def main() -> None:
     p.add_argument("--sources", default=",".join(SOURCES), help=f"Comma list of: {', '.join(SOURCES)}")
     p.add_argument("--max-google", type=int, default=50, help="Max Google results (10 per API call)")
     p.add_argument("--country-code", help="Google 'gl' country boost, e.g. in, us, de")
-    p.add_argument("--date", default="", help="Posted within: d1 (24 hours), d7, w2, m1, m3 (default: any time). "
+    p.add_argument("--date", default="", help="Posted within: d1 (24 hours), d2, d3, d7 (default: any time). "
                                              "Applies to every source; undated jobs are dropped")
     p.add_argument("--strict", action="store_true", help="Drop jobs with no detectable experience info")
     p.add_argument("--min-salary", help='Min annual salary, e.g. 1200000, "12 LPA", 12L, 80k')

@@ -47,7 +47,7 @@ python job_scraper.py --role "data engineer" --experience 3-5 --location "india,
 python job_scraper.py --role "react developer" --experience senior --location berlin --country-code de --out jobs.csv
 python job_scraper.py --role "backend developer" --location india --min-salary "15 LPA" --salary-only
 python job_scraper.py --role python --location india --job-type internship,remote
-python job_scraper.py --role "product manager" --location "london" --sources google --max-google 100 --date w2
+python job_scraper.py --role "product manager" --location "london" --sources google --max-google 100 --date d7
 ```
 
 | Option | Meaning |
@@ -58,7 +58,7 @@ python job_scraper.py --role "product manager" --location "london" --sources goo
 | `--sources` | Subset of `google,careers,instahyre,cutshort,internshala,adzuna,jooble,jobvetta,himalayas,remotive,arbeitnow,remoteok,jobicy` |
 | `--max-google` | Google results (10 per API call; max 100) |
 | `--country-code` | Google `gl` boost, e.g. `in`, `us`, `de` |
-| `--date` | Posted within: `d1` (24 hours), `d7`, `w2`, `m1`, `m3`; default any time. Applies to every source |
+| `--date` | Posted within: `d1` (24 hours), `d2`, `d3`, `d7`; web UI defaults to `d1`, CLI defaults to any time. Applies to every source |
 | `--strict` | Drop jobs whose experience can't be detected |
 | `--min-salary` / `--max-salary` | Annual salary: `1200000`, `"12 LPA"`, `12L`, `80k`, `1.5cr` |
 | `--currency` | Currency of the salary filter (default INR for Indian locations, else USD). The web UI always uses the default |

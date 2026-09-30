@@ -16,7 +16,7 @@ import quota
 import stats
 import store
 from job_scraper import (DATE_WINDOWS, JOB_TYPES, LEVELS, SORTS, SOURCES, fmt_exp, fmt_posted, fmt_salary,
-                         fmt_type, is_india, search_jobs, slugify, sort_jobs, write_csv)
+                         fmt_type, is_india, linkedin_company_url, search_jobs, slugify, sort_jobs, write_csv)
 
 app = Flask(__name__)
 
@@ -123,7 +123,8 @@ PAGE = """<!doctype html>
    title="Sort by salary">Salary / yr {{ '▼' if sort=='salary_desc' else '▲' if sort=='salary_asc' else '↕' }}</a></th><th>Type</th><th>Posted</th><th>Source</th><th>Actions</th></tr>
  {% for j in jobs %}<tr {{ 'class=hidden-row' if 'hidden' in my_actions.get(j.url, []) }}>
   <td><a href="{{ j.url }}" target="_blank" rel="noopener">{{ j.title }}</a></td>
-  <td>{{ j.company }}</td><td>{{ j.location }}</td><td>{{ fmt_exp(j) }}</td>
+  <td>{{ j.company }} <a href="{{ linkedin_company_url(j.company) }}" target="_blank" rel="noopener" class="muted" title="Find {{ j.company }} on LinkedIn">in</a></td>
+  <td>{{ j.location }}</td><td>{{ fmt_exp(j) }}</td>
   <td class="salary">{{ fmt_salary(j, cur) }}</td>
   <td class="type">{% for t in fmt_type(j).split(" · ") if t != "-" %}<span class="tag {{ t|lower }}">{{ t }}</span> {% endfor %}</td>
   <td class="muted" title="{{ j.posted }}">{{ fmt_posted(j) }}</td><td class="muted">{{ j.source }}</td>
@@ -267,6 +268,7 @@ def index():
     q = read_query(request.args)
     if not request.args:  # first-ever page load (no search submitted yet): show all job types as selected
         q["job_type"] = ["full-time", "internship"]  # not "remote" too - that would narrow, not include-all
+        q["date"] = "d1"  # and default "Posted within" to the last 24 hours
     vid = get_visitor_id()
     my_actions = store.get_actions(vid)
     jobs, error, total = None, None, 0
@@ -313,7 +315,7 @@ def index():
                                   sorts=SORTS, sort=sort, sort_url=sort_url, page=page, pages=pages,
                                   page_url=page_url, action_url=action_url,
                                   fmt_exp=fmt_exp, fmt_salary=fmt_salary, fmt_type=fmt_type,
-                                  fmt_posted=fmt_posted)
+                                  fmt_posted=fmt_posted, linkedin_company_url=linkedin_company_url)
 
 
 @app.route("/action")
