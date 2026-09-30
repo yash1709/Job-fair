@@ -93,9 +93,11 @@ def run(threshold: int = 3, workers: int = 12) -> dict:
             keep.append(c)  # not yet at the threshold - keep it for now
 
     save_state(state)
+    # Written unconditionally, even when empty - a CI step downstream does `git add pruned_companies.json`,
+    # which fails outright if the file has never existed yet (as opposed to existing with no content).
+    save_pruned(load_pruned() + remove)
     if remove:
         careers.save_companies(keep)
-        save_pruned(load_pruned() + remove)
         print(f"[prune] removed {len(remove)} companies with no current jobs; {len(keep)} remain tracked", flush=True)
     else:
         print("[prune] nothing to remove this run", flush=True)

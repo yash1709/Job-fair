@@ -25,3 +25,4 @@ job_scraper.db-*
 # OS
 .DS_Store
 Thumbs.db
+run_log.txt
