@@ -7,7 +7,12 @@ name: discover new company boards
 on:
   schedule:
     - cron: "0 3 * * 0"  # every Sunday, 03:00 UTC
-  workflow_dispatch: {}   # also runnable manually from the Actions tab
+  workflow_dispatch:      # also runnable manually from the Actions tab
+    inputs:
+      limit:
+        description: "Only check this many untracked candidates (for a quick test run - leave empty for the real, full check)"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -22,7 +27,13 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - run: python discover.py --refresh-candidates
+      - name: Run discover.py
+        run: |
+          if [ -n "${{ inputs.limit }}" ]; then
+            python discover.py --refresh-candidates --limit "${{ inputs.limit }}"
+          else
+            python discover.py --refresh-candidates
+          fi
       - name: Commit and push if companies.json changed
         run: |
           git config user.name "github-actions[bot]"
