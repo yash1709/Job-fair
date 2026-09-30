@@ -27,7 +27,11 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import os
+
 import requests
+
+import stats
 
 COMPANIES_FILE = Path(__file__).with_name("companies.json")
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -37,6 +41,18 @@ BOARD_TTL = 75 * 60  # boards don't depend on the search, so reuse them across s
 _board_cache: dict[tuple[str, str], tuple[float, list[dict]]] = {}
 _failed: dict[tuple[str, str], float] = {}
 RETRY_FAILED_AFTER = 5 * 60
+
+# Set LOW_MEMORY=1 on a constrained host (e.g. Streamlit Community Cloud's ~1GB free tier) to cap
+# how many jobs are kept per company board. The few dozen large multinationals (Workday especially)
+# are what push total memory up; capping just those, rather than dropping companies outright, keeps
+# broad coverage while bounding the worst-case size.
+LOW_MEMORY = os.getenv("LOW_MEMORY") == "1"
+MAX_JOBS_PER_BOARD = {
+    "smartrecruiters": 100 if LOW_MEMORY else 300,
+    "workday": 40 if LOW_MEMORY else 100,
+    "amazon": 100 if LOW_MEMORY else 300,
+    "oraclehcm": 60 if LOW_MEMORY else 200,
+}
 
 
 def _text(s: str | None) -> str:
@@ -128,7 +144,7 @@ def ashby(slug: str, name: str) -> list[dict]:
     return out
 
 
-def smartrecruiters(slug: str, name: str, max_jobs: int = 300) -> list[dict]:
+def smartrecruiters(slug: str, name: str, max_jobs: int = MAX_JOBS_PER_BOARD["smartrecruiters"]) -> list[dict]:
     out, offset = [], 0
     while offset < max_jobs:
         r = requests.get(f"https://api.smartrecruiters.com/v1/companies/{slug}/postings",
@@ -178,7 +194,7 @@ def _find_india_facet(facets: list) -> tuple[str, list[str]] | None:
     return None
 
 
-def workday(slug: str, name: str, max_jobs: int = 100) -> list[dict]:  # 20 per request is Workday's maximum
+def workday(slug: str, name: str, max_jobs: int = MAX_JOBS_PER_BOARD["workday"]) -> list[dict]:  # 20/request is Workday's max
     """Workday careers site, India jobs only (these are big global boards). slug = "tenant/wdN/Site",
     from a careers URL like https://tenant.wdN.myworkdayjobs.com/Site."""
     tenant, wd, site = slug.split("/", 2)
@@ -208,7 +224,7 @@ def workday(slug: str, name: str, max_jobs: int = 100) -> list[dict]:  # 20 per 
     return out
 
 
-def amazon(slug: str, name: str, max_jobs: int = 300) -> list[dict]:
+def amazon(slug: str, name: str, max_jobs: int = MAX_JOBS_PER_BOARD["amazon"]) -> list[dict]:
     """amazon.jobs public search, India jobs only (newest first). slug is unused."""
     from datetime import datetime
 
@@ -233,7 +249,7 @@ def amazon(slug: str, name: str, max_jobs: int = 300) -> list[dict]:
     return out
 
 
-def oraclehcm(slug: str, name: str, max_jobs: int = 200) -> list[dict]:
+def oraclehcm(slug: str, name: str, max_jobs: int = MAX_JOBS_PER_BOARD["oraclehcm"]) -> list[dict]:
     """Oracle Recruiting Cloud careers site, India jobs only. slug = "host/SiteNumber", from a careers URL like
     https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001."""
     host, site = slug.split("/", 1)
@@ -341,8 +357,11 @@ _progress = {"loading": False, "done": 0, "total": 0}
 
 
 def status() -> dict:
-    """{'loading': bool, 'done': boards finished, 'total': boards, 'cached': boards with data}"""
-    return {**_progress, "cached": len(_board_cache)}
+    """{'loading': bool, 'done': boards finished, 'total': boards, 'cached': boards with data,
+    'failed_recently': boards that errored within the last RETRY_FAILED_AFTER window}"""
+    now = time.time()
+    failed_recently = sum(1 for t in _failed.values() if now - t < RETRY_FAILED_AFTER)
+    return {**_progress, "cached": len(_board_cache), "failed_recently": failed_recently}
 
 
 def cached_jobs() -> list[dict]:

@@ -34,6 +34,12 @@ Google keys (free):
 
 Without keys the scraper still runs on the keyless sources.
 
+**Running the tests:**
+```powershell
+.\.venv\Scripts\pip install -r requirements-dev.txt
+pytest tests/
+```
+
 ## CLI
 
 ```powershell
@@ -90,7 +96,7 @@ the app's **Settings → Secrets**, as TOML:
 ```toml
 GOOGLE_API_KEY = "..."
 GOOGLE_CSE_ID = "..."
-ADZUNA_APP_ID = "..."
+ADZUNA_APP_ID = "3767214391d5fcb4bb509587d68b01a2"
 ADZUNA_APP_KEY = "..."
 JOOBLE_API_KEY = "..."
 JOBVETTA_API_KEY = "..."
@@ -106,7 +112,67 @@ whatever's loaded so far, rather than blocking for the full ~10-13 minutes.
 **Memory:** Streamlit Community Cloud's free tier caps apps at about 1 GB of RAM. With ~1000 companies and
 ~40k careers jobs cached, this is a real constraint - if the deployed app restarts unexpectedly or looks stuck,
 that's the likely cause. Trimming `companies.json` (or dropping `careers` from the default source list) reduces
-memory use if this happens.
+memory use if this happens. See **Low-memory mode** below for a built-in knob.
+
+## Reliability, quality, and extra features
+
+A public deployment shares its resources (API quotas, memory) across every visitor, so these were added once
+this app moved from a personal tool to something anyone could open:
+
+**API quota protection (`quota.py`).** Jobvetta (50 calls/day), Google Custom Search (100/day), Adzuna, and
+Jooble all have daily free-tier caps. Once anyone can visit the deployed link, a handful of searches could burn
+through Jobvetta's quota in minutes and leave it dead for everyone else that day. Every metered source now
+checks its own remaining quota before calling out, and skips itself (falling back to the other sources) once
+the day's quota is used - same as it already does when a key is simply missing. There's also an app-wide search
+rate limit (`MAX_SEARCHES_PER_MINUTE`, default 20): if the app is being searched faster than that, metered
+sources are skipped for that search rather than let a traffic burst exhaust the daily cap. Both are visible on
+the **Status** page/tab. Override a limit with an env var, e.g. `JOBVETTA_DAILY_LIMIT=30`.
+
+**Low-memory mode (`LOW_MEMORY=1`).** The handful of large multinationals on Workday, SmartRecruiters, Oracle,
+and Amazon are what push total memory up (each can return hundreds to thousands of jobs). Setting `LOW_MEMORY=1`
+lowers the per-board cap on just those sources (e.g. Workday from 100 jobs/company to 40), trading some depth on
+the biggest employers for a meaningfully smaller memory footprint, without dropping any company outright.
+
+**Automated tests (`tests/`, run with `pytest tests/`).** 56 tests cover the parsing/matching logic (salary,
+experience, role and location matching, job-type detection, date windows, sorting) and the saved-search/bookmark
+store and quota tracker - all offline, no network needed. Several encode real bugs found by hand during
+development (a role-matching regression, a India/Indiana location mixup, a salary formatting edge case) so the
+next one gets caught automatically instead of needing another manual debugging session. A GitHub Actions
+workflow (`.github/workflows/tests.yml`) runs them on every push.
+
+**Cross-source duplicate detection.** The same job can appear from more than one source - a company's own
+careers page and a job board that also indexed it. Beyond exact URL/title/company/location matches, jobs are
+now also compared on a normalized (title, company, city) key that ignores company suffixes ("Pvt Ltd",
+"Technologies", ...), punctuation, and known city aliases (Bangalore/Bengaluru, Gurgaon/Gurugram), so near-
+duplicate postings from different sources collapse into one result.
+
+**Remaining coverage gaps.** Most Indian companies still aren't reachable: they run Keka, Darwinbox, or Zoho
+Recruit, none of which expose a public API - their job listings are rendered client-side with no feed to read,
+and adding a headless browser to work around that would be a poor trade against the memory goal above. Large
+global employers not already in `companies.json` (Google, Microsoft, Apple, Meta, Uber, ...) are reachable only
+through the Google Custom Search source, which needs `GOOGLE_API_KEY` / `GOOGLE_CSE_ID` set.
+
+**Bookmarks, hide, mark-applied, saved searches, and alerts (`store.py`, `alerts.py`).** Every job row has
+🔖 bookmark / ✅ mark-applied / ✕ hide actions, private to your own browser (an anonymous id in a cookie for the
+Flask app, in session state for the Streamlit app - no login). Hidden jobs drop out of results by default (a
+"show hidden" toggle brings them back). Below a search's results, "🔔 Save & alert me" stores the search
+criteria plus an optional webhook URL (a Slack "Incoming Webhook" or Discord channel webhook both work as-is,
+or any URL of your own that accepts a JSON POST); a background thread re-runs every saved search every 30
+minutes and posts any newly-found jobs to its webhook. Manage saved searches (check now / delete) under
+"🔔 Saved searches". This state lives in a local SQLite file (`job_scraper.db`) - on most free hosts that's
+ephemeral across a redeploy, which is an acceptable trade-off for bookmarks and alerts.
+
+**Pagination.** Results are paginated at 50 per page rather than rendered as one unbounded table, which was
+both a usability problem and, at large result counts, a real rendering cost.
+
+**JSON API (Flask only).** `/api/search` takes the same query parameters as the search page and returns JSON
+(`{"count": ..., "currency": ..., "jobs": [...]}`) for programmatic use. Not available on the Streamlit
+deployment - Streamlit doesn't support arbitrary custom routes the way Flask does.
+
+**Status page/tab.** Shows careers-page load progress, boards currently failing, each metered source's daily
+quota usage, and per-source fetch counts/errors for the running process - so a quiet failure (a source silently
+returning 0 for a while) is visible without digging through logs. Flask: `/status`. Streamlit: the "⚙️ Status"
+tab.
 
 ## How experience is detected
 

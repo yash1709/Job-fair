@@ -31,6 +31,9 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
+import quota
+import stats
+
 try:
     from dotenv import load_dotenv
 
@@ -501,6 +504,28 @@ def matches_location(job: Job, locations: list[str]) -> bool:
                 or (not job.location.strip() and pattern.search(job.description)))
 
 
+_COMPANY_SUFFIX_RE = re.compile(
+    r"\b(pvt\.?|private|ltd\.?|limited|llc|inc\.?|incorporated|corp\.?|corporation|technologies|"
+    r"technology|solutions|systems|group)\b", re.IGNORECASE)
+_TITLE_NOISE_RE = re.compile(r"\(.*?\)|\[.*?\]|[^\w\s]")
+
+
+def _fuzzy_key(job: Job) -> tuple[str, str, str] | None:
+    """A loose (title, company, city) key for catching the same job posted through more than one
+    source - e.g. a company's own careers page and a job board that also indexed it, where the exact
+    title/company/location strings differ slightly ("Pvt Ltd" vs not, "Bangalore" vs "Bengaluru, KA").
+    None if there isn't enough to key on safely (empty title or company)."""
+    title = re.sub(r"\s+", " ", _TITLE_NOISE_RE.sub(" ", job.title.lower())).strip()
+    company = re.sub(r"[^\w\s]", "", _COMPANY_SUFFIX_RE.sub("", job.company.lower()))
+    company = re.sub(r"\s+", " ", company).strip()
+    if not title or not company:
+        return None
+    city = re.split(r"[,/(]", job.location.lower())[0].strip()
+    if city != "india":  # LOCATION_ALIASES["india"] expands to every Indian city (for matching, not
+        city = LOCATION_ALIASES.get(city, [city])[0]  # canonicalizing) - leave a bare "india" as-is
+    return title, company, city
+
+
 # ---------------------------------------------------------------------------
 # Sources
 # ---------------------------------------------------------------------------
@@ -512,6 +537,9 @@ def google_search(role: str, experience: str | None, locations: list[str],
     key, cx = os.getenv("GOOGLE_API_KEY"), os.getenv("GOOGLE_CSE_ID")
     if not key or not cx:
         print("[google] GOOGLE_API_KEY / GOOGLE_CSE_ID not set - skipping Google.", file=sys.stderr)
+        return []
+    if not quota.allow("google"):
+        print("[google] daily quota used up - skipping.", file=sys.stderr)
         return []
 
     site_list = GOOGLE_INDIA_JOB_SITES if is_india(locations) else GOOGLE_JOB_SITES
@@ -849,6 +877,9 @@ def adzuna(role: str, locations: list[str] | None = None, days: float | None = N
     if not app_id or not app_key:
         print("[adzuna] ADZUNA_APP_ID / ADZUNA_APP_KEY not set - skipping.", file=sys.stderr)
         return []
+    if not quota.allow("adzuna", cost=2):  # up to 2 pages fetched below
+        print("[adzuna] daily quota used up - skipping.", file=sys.stderr)
+        return []
     locations = locations or []
     country = "in" if is_india(locations) else os.getenv("ADZUNA_COUNTRY", "in")
     where = next((l for l in locations if l.lower() not in ("india", "remote")), "")
@@ -883,6 +914,9 @@ def jooble(role: str, locations: list[str] | None = None, **_) -> list[Job]:
         print("[jooble] JOOBLE_API_KEY not set - skipping.", file=sys.stderr)
         return []
     locs = [l for l in (locations or []) if l.lower() != "remote"] or [""]
+    if not quota.allow("jooble", cost=len(locs[:3])):  # one call per location below
+        print("[jooble] daily quota used up - skipping.", file=sys.stderr)
+        return []
     out = []
     for loc in locs[:3]:
         r = requests.post(f"https://jooble.org/api/{key}", json={"keywords": role, "location": loc},
@@ -942,6 +976,9 @@ def jobvetta(role: str, locations: list[str] | None = None, days: float | None =
     hit = _jobvetta_cache.get(cache_key)
     if hit and time.time() - hit[0] < JOBVETTA_CACHE_TTL:
         return hit[1]
+    if not quota.allow("jobvetta"):
+        print("[jobvetta] daily quota used up - skipping.", file=sys.stderr)
+        return []
 
     result = _mcp_call(JOBVETTA_MCP, key, "search_jobs", args)
     data = result.get("structuredContent")
@@ -1024,6 +1061,12 @@ def search_jobs(role: str, experience: str | None = None, location: str | None =
     if bad := [t for t in job_types if t not in JOB_TYPES]:
         raise ValueError(f"Unknown job type {bad}. Use: {', '.join(JOB_TYPES)}")
 
+    metered = {"google", "adzuna", "jooble", "jobvetta"}
+    if any(s in metered for s in sources) and not quota.metered_sources_allowed():
+        print(f"[quota] app-wide search rate exceeded - skipping metered sources this search: "
+              f"{sorted(set(sources) & metered)}", file=sys.stderr)
+        sources = [s for s in sources if s not in metered]
+
     def fetch(name: str) -> list[Job]:
         try:
             if name == "google":
@@ -1032,9 +1075,11 @@ def search_jobs(role: str, experience: str | None = None, location: str | None =
                 got = SOURCES[name](role, exp_range=exp_range, locations=locations, job_types=job_types,
                                     days=days)
             print(f"[{name}] fetched {len(got)}", file=sys.stderr)
+            stats.record(name, len(got))
             return got
         except Exception as e:  # one broken source shouldn't kill the run
             print(f"[{name}] failed: {e}", file=sys.stderr)
+            stats.record(name, None, error=str(e))
             return []
 
     with ThreadPoolExecutor(max_workers=len(sources)) as pool:
@@ -1042,7 +1087,10 @@ def search_jobs(role: str, experience: str | None = None, location: str | None =
 
     seen, results = set(), []
     for job in raw:
-        keys = {job.url, (job.title.lower(), job.company.lower(), job.location.lower())} - {""}
+        keys = {job.url, (job.title.lower(), job.company.lower(), job.location.lower())}
+        if fkey := _fuzzy_key(job):
+            keys.add(fkey)
+        keys -= {""}
         if keys & seen:
             continue
         seen |= keys
