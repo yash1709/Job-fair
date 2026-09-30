@@ -3,5 +3,115 @@
   "ats": "greenhouse",
   "jobs": 3,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "baba": {
+  "ats": "ashby",
+  "jobs": 14,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "bcg": {
+  "ats": "greenhouse",
+  "jobs": 3,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "bcp": {
+  "ats": "greenhouse",
+  "jobs": 3,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "dci": {
+  "ats": "smartrecruiters",
+  "jobs": 14,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "gtv": {
+  "ats": "greenhouse",
+  "jobs": 6,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "icon": {
+  "ats": "ashby",
+  "jobs": 6,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "iex": {
+  "ats": "greenhouse",
+  "jobs": 10,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "iris": {
+  "ats": "greenhouse",
+  "jobs": 2,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "kacl": {
+  "ats": "lever",
+  "jobs": 5,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "mos": {
+  "ats": "greenhouse",
+  "jobs": 2,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "mrss": {
+  "ats": "lever",
+  "jobs": 2,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "ncc": {
+  "ats": "smartrecruiters",
+  "jobs": 149,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "oal": {
+  "ats": "greenhouse",
+  "jobs": 7,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "rain": {
+  "ats": "ashby",
+  "jobs": 42,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "rupa": {
+  "ats": "lever",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "sail": {
+  "ats": "ashby",
+  "jobs": 5,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "sona": {
+  "ats": "ashby",
+  "jobs": 15,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "srm": {
+  "ats": "greenhouse",
+  "jobs": 12,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "tcs": {
+  "ats": "greenhouse",
+  "jobs": 94,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "trf": {
+  "ats": "smartrecruiters",
+  "jobs": 27,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "uel": {
+  "ats": "smartrecruiters",
+  "jobs": 2,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "vega": {
+  "ats": "ashby",
+  "jobs": 5,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  }
 }
