@@ -70,6 +70,44 @@ python app.py   # http://127.0.0.1:5000
 Debug mode (auto-reload on code changes) is off by default because it runs a second copy of the app and roughly
 doubles memory use. Turn it on with `$env:JOB_SCRAPER_DEBUG = "1"` before `python app.py`.
 
+## Deploying (Streamlit Community Cloud)
+
+`app.py` is a Flask app and **cannot run on Streamlit Community Cloud** - that platform only knows how to execute
+a Streamlit script (`streamlit run <file>`), not something that starts its own server with `app.run()`. Use
+`streamlit_app.py` instead: the same search UI, rebuilt with Streamlit widgets on top of the same
+`job_scraper.py` / `careers.py` logic.
+
+```powershell
+streamlit run streamlit_app.py   # local run, http://localhost:8501
+```
+
+To deploy: on [share.streamlit.io](https://share.streamlit.io), point the app's **Main file path** at
+`streamlit_app.py` (not `app.py`). If an app was already created pointing at `app.py`, open its settings and
+change the main file path, then reboot the app.
+
+**Secrets:** there's no `.env` on Streamlit Cloud (it's gitignored, never deployed). Add any keys you have under
+the app's **Settings → Secrets**, as TOML:
+```toml
+GOOGLE_API_KEY = "..."
+GOOGLE_CSE_ID = "..."
+ADZUNA_APP_ID = "..."
+ADZUNA_APP_KEY = "..."
+JOOBLE_API_KEY = "..."
+JOBVETTA_API_KEY = "..."
+```
+`streamlit_app.py` copies these into the environment on startup, since `job_scraper.py` reads them with
+`os.getenv`. Sources whose key is missing are skipped, same as running locally without them.
+
+**Careers pages load in the background,** the same way `app.py` does it: a background thread refreshes all
+~1000 company boards on a loop, shared across every visitor (`st.cache_resource` makes it a once-per-app-instance
+singleton, not once-per-visitor). The first search after a cold start shows a "still loading" notice and returns
+whatever's loaded so far, rather than blocking for the full ~10-13 minutes.
+
+**Memory:** Streamlit Community Cloud's free tier caps apps at about 1 GB of RAM. With ~1000 companies and
+~40k careers jobs cached, this is a real constraint - if the deployed app restarts unexpectedly or looks stuck,
+that's the likely cause. Trimming `companies.json` (or dropping `careers` from the default source list) reduces
+memory use if this happens.
+
 ## How experience is detected
 
 Years are parsed from the title/description (`3+ years`, `2-4 yrs`, ...); otherwise the level is inferred
