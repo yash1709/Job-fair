@@ -369,8 +369,8 @@ def fmt_salary(j: Job, currency: str | None = None) -> str:
 # ---------------------------------------------------------------------------
 
 # Same codes as Google's dateRestrict, so one setting drives both.
-DATE_WINDOWS = {"d1": "Last 24 hours", "d7": "Last 7 days", "w2": "Last 2 weeks", "m1": "Last month",
-                "m3": "Last 3 months"}
+DATE_WINDOWS = {"d1": "Last 24 hours", "d2": "Last 2 days", "d3": "Last 3 days", "d7": "Last 7 days",
+                "w2": "Last 2 weeks", "m1": "Last month", "m3": "Last 3 months"}
 _WINDOW_UNIT_DAYS = {"d": 1, "w": 7, "m": 30, "y": 365}
 
 

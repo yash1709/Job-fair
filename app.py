@@ -78,7 +78,6 @@ PAGE = """<!doctype html>
    <option {{ 'selected' if q.experience==e }}>{{ e }}</option>{% endfor %}
   </select></label>
  <label>Location(s)<input name="location" value="{{ q.location }}" placeholder="india, berlin, remote"></label>
- <label>Google country (gl)<input name="country_code" value="{{ q.country_code }}" placeholder="in / us / de" style="min-width:80px"></label>
  <div class="group">
   <label>Min salary / yr<input name="min_salary" value="{{ q.min_salary }}" placeholder="12 LPA / 80k" title="Rupees for Indian locations, US dollars otherwise" style="min-width:110px;width:110px"></label>
   <label>Max salary / yr<input name="max_salary" value="{{ q.max_salary }}" placeholder="any" style="min-width:110px;width:110px"></label>
@@ -112,7 +111,7 @@ PAGE = """<!doctype html>
      <option value="{{ v }}" {{ 'selected' if sort==v }}>{{ t }}</option>{% endfor %}</select></label>
    <a class="btn" href="/download.csv?{{ request.query_string.decode() }}">⬇ Download CSV</a>
    <form class="save-form" method="post" action="{{ url_for('save_search') }}">
-    {% for k in ['role','experience','location','country_code','date','min_salary','max_salary'] %}
+    {% for k in ['role','experience','location','date','min_salary','max_salary'] %}
     <input type="hidden" name="{{ k }}" value="{{ q[k] }}">{% endfor %}
     {% for s in q.sources %}<input type="hidden" name="sources" value="{{ s }}">{% endfor %}
     {% for t in q.job_type %}<input type="hidden" name="job_type" value="{{ t }}">{% endfor %}
@@ -230,7 +229,7 @@ def read_query(args) -> dict:
         "role": args.get("role", ""),
         "experience": args.get("experience", ""),
         "location": args.get("location", ""),
-        "country_code": args.get("country_code", ""),
+        "country_code": "",  # no UI control for this; search_jobs auto-detects India and sets gl=in itself
         "date": args.get("date", "") if args.get("date", "") in DATE_WINDOWS else "",
         "sources": args.getlist("sources") or list(SOURCES),
         "strict": bool(args.get("strict")),
@@ -266,6 +265,8 @@ def careers_loading(q: dict) -> bool:
 @app.route("/")
 def index():
     q = read_query(request.args)
+    if not request.args:  # first-ever page load (no search submitted yet): show all job types as selected
+        q["job_type"] = ["full-time", "internship"]  # not "remote" too - that would narrow, not include-all
     vid = get_visitor_id()
     my_actions = store.get_actions(vid)
     jobs, error, total = None, None, 0

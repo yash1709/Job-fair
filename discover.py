@@ -29,6 +29,7 @@ import careers
 CANDIDATES_FILE = Path(__file__).with_name("yc_candidates.json")
 EXCLUDED_FILE = Path(__file__).with_name("yc_excluded.json")
 REVIEW_FILE = Path(__file__).with_name("yc_needs_review.json")
+PRUNED_FILE = Path(__file__).with_name("pruned_companies.json")  # companies prune.py removed for having no jobs
 
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                     "(KHTML, like Gecko) Chrome/130.0 Safari/537.36"}
@@ -111,6 +112,32 @@ def main() -> None:
     excluded = json.loads(EXCLUDED_FILE.read_text(encoding="utf-8")) if EXCLUDED_FILE.exists() else {}
 
     existing = careers.load_companies()
+
+    # Recheck previously-pruned companies first: unlike YC candidates (unknown ats/slug, needs a 3-way
+    # guess), these already have a known board, so it's one direct check each, not three.
+    pruned = json.loads(PRUNED_FILE.read_text(encoding="utf-8")) if PRUNED_FILE.exists() else []
+    if pruned:
+        print(f"[discover] rechecking {len(pruned)} previously-pruned companies", flush=True)
+
+        def recheck(c: dict) -> tuple[dict, int]:
+            try:
+                return c, len(careers.fetch_board(c))
+            except Exception as e:
+                print(f"[discover] recheck of {c['name']} failed: {e!s:.100}", flush=True)
+                return c, 0
+
+        with ThreadPoolExecutor(min(args.workers, len(pruned))) as pool:
+            counts = list(pool.map(recheck, pruned))
+        revived = [c for c, n in counts if n > 0]
+        if revived:
+            existing = existing + revived
+            careers.save_companies(existing)
+            pruned = [c for c in pruned if c not in revived]
+            PRUNED_FILE.write_text(json.dumps(pruned, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+            print(f"[discover] {len(revived)} pruned companies are hiring again - re-added:", flush=True)
+            for c in revived:
+                print(f"   + {c['name']} ({c['ats']}/{c['slug']})", flush=True)
+
     tracked_slugs = {c["slug"].lower() for c in existing}
     tracked_names = {re.sub(r"[^a-z0-9]", "", c["name"].lower()) for c in existing}
 

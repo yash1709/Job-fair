@@ -5,7 +5,7 @@ Searches jobs worldwide and filters them by **role**, **experience** and **locat
 | Source | Key needed | Coverage |
 |---|---|---|
 | `google` – Google Custom Search JSON API | Yes (free, 100 queries/day) | Greenhouse, Lever, Workday, Ashby, SmartRecruiters, Workable, LinkedIn, Wellfound job pages, worldwide. **When the location is in India** it searches Naukri, Foundit, Instahyre, Cutshort, iimjobs, Hirist, Internshala, Shine, Indeed India and LinkedIn instead |
-| `careers` | No | Company careers pages of the 999 companies in `companies.json` (~40k jobs): Indian companies (Razorpay, Swiggy, CRED, Paytm, Freshworks…), global tech companies, **266 US-origin companies with offices in India** (Walmart, Amazon, JPMorgan, Citi, Accenture, NVIDIA, Salesforce, Cisco, Texas Instruments, Medtronic, Wells Fargo…, only their India jobs kept), and **598 Y Combinator startups** with an open Greenhouse/Lever/Ashby board |
+| `careers` | No | Company careers pages of the 1000+ companies in `companies.json` (this number changes daily - see below): Indian companies (Razorpay, Swiggy, CRED, Paytm, Freshworks…), global tech companies, US-origin companies with offices in India (Walmart, Amazon, JPMorgan, Citi, Accenture, NVIDIA, Salesforce, Cisco, Texas Instruments, Medtronic, Wells Fargo…, only their India jobs kept), and Y Combinator startups with an open Greenhouse/Lever/Ashby board |
 | `instahyre` | No | India tech jobs (experience filtered server-side) |
 | `cutshort` | No | India startup jobs, with experience ranges (pages exist per skill, e.g. "python", "react") |
 | `internshala` | No | India fresher / early-career jobs |
@@ -250,6 +250,28 @@ Bird Rides' Greenhouse board isn't YC's Bird, a messaging company). `yc_excluded
 of confirmed collisions found this way, so they're never re-added. Short slugs (under 5 characters) are where
 this happens - common English words are more likely to already be claimed by someone else - so a new hit that
 short is written to `yc_needs_review.json` for a human to check, instead of being auto-added.
+
+### Removing companies that stopped hiring (`prune.py`)
+
+The mirror image of `discover.py`: nothing above ever *removes* a company, so one that's stopped hiring would sit
+in `companies.json` forever, costing an hourly fetch for nothing. `prune.py` rechecks every company already
+tracked, and any with **no jobs for 3 consecutive daily runs** is moved out of `companies.json` into
+`pruned_companies.json`. `discover.py` rechecks that file every run too (alongside the YC candidate pool), so a
+company that starts hiring again later is added straight back automatically - nothing is lost, just set aside
+while it isn't useful. Runs daily via `.github/workflows/prune-companies.yml`.
+
+A single empty day isn't enough to remove a company (a network hiccup or a one-off ATS error looks the same as a
+closed board from here) - `prune_state.json` tracks the current consecutive-empty streak per company, resetting
+to zero the moment jobs reappear.
+
+```powershell
+python prune.py                    # check all companies, remove those past the threshold
+python prune.py --threshold 5      # require 5 consecutive empty days instead of the default 3
+```
+
+Together, `discover.py` (weekly) and `prune.py` (daily) mean `companies.json` always reflects companies with a
+*currently* live board - not a frozen snapshot from whenever they were first added, and not cluttered with ones
+that have gone quiet.
 
 ## Posted date
 

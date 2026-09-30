@@ -152,15 +152,16 @@ with tab_search:
                                   format_func=lambda v: v or "Any")
         location = c3.text_input("Location(s)", placeholder="india, berlin, remote")
 
-        c4, c5, c6 = st.columns(3)
+        c4, c5 = st.columns(2)
         min_salary = c4.text_input("Min salary / yr", placeholder="12 LPA / 80k",
                                    help="Rupees for Indian locations, US dollars otherwise")
         max_salary = c5.text_input("Max salary / yr", placeholder="any")
-        country_code = c6.text_input("Google country (gl)", placeholder="in / us / de")
+        country_code = ""  # no UI control for this; search_jobs auto-detects India and sets gl=in itself
 
         c7, c8 = st.columns(2)
         job_type = c7.multiselect("Job type", JOB_TYPES, format_func=str.capitalize,
-                                  help="Full-time / Internship are alternatives; Remote narrows either")
+                                  default=["full-time", "internship"],  # "all" by default; not "remote" too,
+                                  help="Full-time / Internship are alternatives; Remote narrows either")  # that would narrow, not include-all
         date = c8.selectbox("Posted within", [""] + list(DATE_WINDOWS), format_func=lambda v: DATE_WINDOWS.get(v, "Any time"))
 
         sources = st.multiselect("Sources", list(SOURCES), default=list(SOURCES))
