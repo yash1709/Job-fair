@@ -236,7 +236,8 @@ with tab_search:
                     f'<tr class="{"hidden-row" if "hidden" in acts else ""}">'
                     f"<td><a href='{j.url}' target='_blank' rel='noopener'>{j.title}</a></td>"
                     f"<td>{j.company} <a href='{linkedin_company_url(j.company)}' target='_blank' rel='noopener' "
-                    f"class='muted' title='Find {j.company} on LinkedIn'>in</a></td><td>{j.location}</td><td>{fmt_exp(j)}</td>"
+                    f"class='muted' title='Best-guess LinkedIn page for {j.company} (not verified - may be "
+                    f"wrong or missing)'>in</a></td><td>{j.location}</td><td>{fmt_exp(j)}</td>"
                     f"<td style='white-space:nowrap'>{fmt_salary(j, cur)}</td><td>{tags or '-'}</td>"
                     f"<td class='muted' title='{j.posted}'>{fmt_posted(j)}</td><td class='muted'>{j.source}</td>"
                     f"<td class='rowact'>{row_actions}</td></tr>"

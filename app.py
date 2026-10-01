@@ -123,7 +123,7 @@ PAGE = """<!doctype html>
    title="Sort by salary">Salary / yr {{ '▼' if sort=='salary_desc' else '▲' if sort=='salary_asc' else '↕' }}</a></th><th>Type</th><th>Posted</th><th>Source</th><th>Actions</th></tr>
  {% for j in jobs %}<tr {{ 'class=hidden-row' if 'hidden' in my_actions.get(j.url, []) }}>
   <td><a href="{{ j.url }}" target="_blank" rel="noopener">{{ j.title }}</a></td>
-  <td>{{ j.company }} <a href="{{ linkedin_company_url(j.company) }}" target="_blank" rel="noopener" class="muted" title="Find {{ j.company }} on LinkedIn">in</a></td>
+  <td>{{ j.company }} <a href="{{ linkedin_company_url(j.company) }}" target="_blank" rel="noopener" class="muted" title="Best-guess LinkedIn page for {{ j.company }} (not verified - may be wrong or missing)">in</a></td>
   <td>{{ j.location }}</td><td>{{ fmt_exp(j) }}</td>
   <td class="salary">{{ fmt_salary(j, cur) }}</td>
   <td class="type">{% for t in fmt_type(j).split(" · ") if t != "-" %}<span class="tag {{ t|lower }}">{{ t }}</span> {% endfor %}</td>

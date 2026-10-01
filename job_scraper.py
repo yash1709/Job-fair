@@ -28,7 +28,6 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field
 from functools import lru_cache
 from datetime import datetime, timedelta, timezone
-from urllib.parse import quote_plus
 
 import requests
 
@@ -1166,11 +1165,24 @@ def fmt_type(j: Job) -> str:
     return " · ".join(parts) or "-"
 
 
+_LEGAL_SUFFIX_RE = re.compile(
+    r"\s+(private\s+limited|pvt\.?\s*ltd\.?|limited|ltd\.?|llc|inc\.?|incorporated|corp\.?|corporation|plc|co\.?)\s*$",
+    re.IGNORECASE)
+
+
 def linkedin_company_url(company: str) -> str:
-    """LinkedIn has no free API for exact company-page lookup, and vanity slugs (linkedin.com/company/<slug>)
-    aren't reliably guessable from a name, so this points to LinkedIn's own company search pre-filled with
-    the name instead - works for every company, with no API key, no scraping, and no rate limit."""
-    return f"https://www.linkedin.com/search/results/companies/?keywords={quote_plus(company)}"
+    """Best-effort guess at the company's LinkedIn page, built from the name alone - no API, no lookup, so
+    it's sometimes wrong (linkedin.com/company/<slug>/ either belongs to an unrelated company that picked
+    the same slug, or doesn't exist at all). Common legal suffixes are stripped first since LinkedIn vanity
+    slugs usually omit them (e.g. "Infosys Limited" -> linkedin.com/company/infosys/, not .../infosys-limited/)."""
+    name = company
+    while True:
+        stripped = _LEGAL_SUFFIX_RE.sub("", name)
+        if stripped == name:
+            break
+        name = stripped
+    slug = slugify(name) or slugify(company)
+    return f"https://www.linkedin.com/company/{slug}/"
 
 
 def print_table(jobs: list[Job]) -> None:

@@ -13,9 +13,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from job_scraper import (
     Job, _fuzzy_key, fmt_exp, fmt_posted, fmt_salary, fmt_type, is_india, iso_from_relative,
-    matches_experience, matches_job_type, matches_location, matches_posted, matches_role,
-    matches_salary, normalize_job_type, parse_amount, parse_experience_arg, parse_salary_text,
-    slugify, sort_jobs, window_days,
+    linkedin_company_url, matches_experience, matches_job_type, matches_location, matches_posted,
+    matches_role, matches_salary, normalize_job_type, parse_amount, parse_experience_arg,
+    parse_salary_text, slugify, sort_jobs, window_days,
 )
 
 
@@ -271,6 +271,22 @@ def test_is_india():
     assert is_india(["india"])
     assert not is_india(["berlin"])
     assert not is_india(["remote"])
+
+
+# --- linkedin_company_url -------------------------------------------------------------------------
+
+def test_linkedin_url_strips_legal_suffixes():
+    assert linkedin_company_url("Infosys Limited") == "https://www.linkedin.com/company/infosys/"
+    assert linkedin_company_url("Acme Corp") == "https://www.linkedin.com/company/acme/"
+    assert linkedin_company_url("Example Pvt Ltd") == "https://www.linkedin.com/company/example/"
+
+
+def test_linkedin_url_slugifies_the_rest():
+    assert linkedin_company_url("Mahindra & Mahindra Ltd") == "https://www.linkedin.com/company/mahindra-mahindra/"
+
+
+def test_linkedin_url_never_empty_even_for_an_all_suffix_name():
+    assert linkedin_company_url("Ltd") == "https://www.linkedin.com/company/ltd/"
 
 
 def test_slugify():
