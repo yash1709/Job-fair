@@ -15,8 +15,9 @@ import careers
 import quota
 import stats
 import store
-from job_scraper import (DATE_WINDOWS, JOB_TYPES, LEVELS, SORTS, SOURCES, fmt_exp, fmt_posted, fmt_salary,
-                         fmt_type, is_india, linkedin_company_url, search_jobs, slugify, sort_jobs, write_csv)
+from job_scraper import (DATE_WINDOWS, EXPERIENCE_OPTIONS, JOB_TYPES, SORTS, SOURCES, fmt_exp, fmt_posted,
+                         fmt_salary, fmt_type, is_india, linkedin_company_url, search_jobs, slugify, sort_jobs,
+                         write_csv)
 
 app = Flask(__name__)
 
@@ -68,16 +69,14 @@ PAGE = """<!doctype html>
 </header>
 <form method="get" id="search">
  <label>Role<input name="role" value="{{ q.role }}" placeholder="python developer" required></label>
- <label>Experience
-  <select name="experience">
-   <option value="">Any</option>
-   {% for e in ["0-1","0-2","2-4","3-5","5+","8+"] + levels %}
-   <option {{ 'selected' if q.experience==e }}>{{ e }}</option>{% endfor %}
-  </select></label>
  <label>Location(s)<input name="location" value="{{ q.location }}" placeholder="india, berlin, remote"></label>
  <div class="group">
   <label>Min salary / yr<input name="min_salary" value="{{ q.min_salary }}" placeholder="12 LPA / 80k" title="Rupees for Indian locations, US dollars otherwise" style="min-width:110px;width:110px"></label>
   <label>Max salary / yr<input name="max_salary" value="{{ q.max_salary }}" placeholder="any" style="min-width:110px;width:110px"></label>
+ </div>
+ <div class="types" title="Select one or more - a job matching ANY of them is kept">
+  {% for e in experience_options %}<label class="chip"><input type="checkbox" name="experience" value="{{ e }}"
+   {{ 'checked' if e in q.experience }}>{{ e }}</label>{% endfor %}
  </div>
  <div class="types" title="Full-time / Internship are alternatives; Remote narrows either">
   {% for t in job_types %}<label class="chip"><input type="checkbox" name="job_type" value="{{ t }}"
@@ -106,8 +105,9 @@ PAGE = """<!doctype html>
      <option value="{{ v }}" {{ 'selected' if sort==v }}>{{ t }}</option>{% endfor %}</select></label>
    <a class="btn" href="/download.csv?{{ request.query_string.decode() }}">⬇ Download CSV</a>
    <form class="save-form" method="post" action="{{ url_for('save_search') }}">
-    {% for k in ['role','experience','location','date','min_salary','max_salary'] %}
+    {% for k in ['role','location','date','min_salary','max_salary'] %}
     <input type="hidden" name="{{ k }}" value="{{ q[k] }}">{% endfor %}
+    {% for e in q.experience %}<input type="hidden" name="experience" value="{{ e }}">{% endfor %}
     {% for s in q.sources %}<input type="hidden" name="sources" value="{{ s }}">{% endfor %}
     {% for t in q.job_type %}<input type="hidden" name="job_type" value="{{ t }}">{% endfor %}
     <input name="webhook_url" placeholder="Slack/Discord webhook URL (optional)">
@@ -216,7 +216,7 @@ def _set_visitor_cookie(resp):
 def read_query(args) -> dict:
     return {
         "role": args.get("role", ""),
-        "experience": args.get("experience", ""),
+        "experience": [e for e in args.getlist("experience") if e in EXPERIENCE_OPTIONS],
         "location": args.get("location", ""),
         "country_code": "",  # no UI control for this; search_jobs auto-detects India and sets gl=in itself
         "date": args.get("date", "") if args.get("date", "") in DATE_WINDOWS else "",
@@ -290,7 +290,7 @@ def index():
                         "These results only include the ones loaded so far. Search again in a minute for all of them.")
     return render_template_string(PAGE, q=q, jobs=jobs, total=total, error=error, cur=cur,
                                   sources=list(SOURCES), careers_note=careers_note,
-                                  levels=list(LEVELS), date_windows=DATE_WINDOWS, job_types=JOB_TYPES,
+                                  experience_options=EXPERIENCE_OPTIONS, date_windows=DATE_WINDOWS, job_types=JOB_TYPES,
                                   sorts=SORTS, sort=sort, sort_url=sort_url, page=page, pages=pages,
                                   page_url=page_url,
                                   fmt_exp=fmt_exp, fmt_salary=fmt_salary, fmt_type=fmt_type,

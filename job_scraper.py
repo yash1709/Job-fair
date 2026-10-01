@@ -110,6 +110,9 @@ LEVELS = {
     "principal": (10, 25),
 }
 
+# Selectable experience filter values shown in both UIs - years ranges, then every level.
+EXPERIENCE_OPTIONS = ["0-1", "0-2", "2-4", "3-5", "5+", "8+"] + list(LEVELS)
+
 TITLE_LEVEL_WORDS = [
     (r"\b(intern|internship|trainee)\b", "intern"),
     (r"\b(junior|jr\.?|entry[- ]level|graduate|associate)\b", "junior"),
@@ -172,6 +175,21 @@ def parse_experience_arg(value: str | None) -> tuple[int, int] | None:
     raise ValueError(f"Bad experience value '{value}'. Use e.g. 3-5, 5+, 2, or one of {list(LEVELS)}")
 
 
+def parse_experience_args(values: str | list[str] | None) -> list[tuple[int, int]]:
+    """Parses one or more experience filters (comma-separated string, or a list from a multi-select UI)
+    into a list of (min, max) ranges - a job matching ANY of them passes (see matches_experience)."""
+    if not values:
+        return []
+    if isinstance(values, str):
+        values = [v for v in values.split(",") if v.strip()]
+    out: list[tuple[int, int]] = []
+    for v in values:
+        r = parse_experience_arg(v)
+        if r and r not in out:
+            out.append(r)
+    return out
+
+
 def enrich_experience(job: Job) -> None:
     """Detect years of experience and seniority level from title + description."""
     text = f"{job.title} {job.description}"
@@ -216,17 +234,21 @@ def matches_role(job: Job, role: str) -> bool:
     return True
 
 
-def matches_experience(job: Job, exp: tuple[int, int] | None, strict: bool) -> bool:
-    if not exp:
+def matches_experience(job: Job, exp_ranges: list[tuple[int, int]] | None, strict: bool) -> bool:
+    """A job matches if it falls in ANY of the given ranges (multi-select is OR, not AND)."""
+    if not exp_ranges:
         return True
-    lo, hi = exp
-    if job.exp_min is not None:
-        return job.exp_min <= hi and (job.exp_max or 99) >= lo
-    if job.level:
-        llo, lhi = LEVELS[job.level]
-        return llo <= hi and lhi >= lo
-    # No signal in the posting: keep it unless strict mode.
-    return not strict
+    if job.exp_min is None and not job.level:
+        return not strict  # no signal in the posting: keep it unless strict mode
+    for lo, hi in exp_ranges:
+        if job.exp_min is not None:
+            if job.exp_min <= hi and (job.exp_max or 99) >= lo:
+                return True
+        else:
+            llo, lhi = LEVELS[job.level]
+            if llo <= hi and lhi >= lo:
+                return True
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -1091,7 +1113,7 @@ SOURCES = {
 # Orchestration
 # ---------------------------------------------------------------------------
 
-def search_jobs(role: str, experience: str | None = None, location: str | None = None,
+def search_jobs(role: str, experience: str | list[str] | None = None, location: str | None = None,
                 sources: list[str] | None = None, max_google: int = 50,
                 country_code: str | None = None, date_restrict: str | None = None,
                 strict: bool = False, min_salary: str | float | None = None,
@@ -1099,9 +1121,18 @@ def search_jobs(role: str, experience: str | None = None, location: str | None =
                 salary_only: bool = False, job_types: list[str] | None = None) -> list[Job]:
     """min/max_salary are annual amounts in `currency` ('12 LPA', '80k', 1200000 all work).
     currency defaults to INR for Indian locations, USD otherwise.
-    date_restrict ('d1', 'd2', 'd3', 'd7') limits every source by posted date, not just Google."""
+    date_restrict ('d1', 'd2', 'd3', 'd7') limits every source by posted date, not just Google.
+    experience: one value, several (list, or a comma-separated string), or None/empty for any - a job
+    matching ANY of the given ranges passes (see matches_experience)."""
     sources = sources or list(SOURCES)
-    exp_range = parse_experience_arg(experience)
+    exp_ranges = parse_experience_args(experience)
+    # Google's query text can only sensibly embed one level keyword; instahyre's `years` param narrows
+    # server-side to the broadest requested lower bound, with the precise multi-range check applied
+    # centrally below regardless (same "narrow cheaply, filter precisely" pattern as Adzuna's max_days_old).
+    exp_list = experience if isinstance(experience, (list, tuple)) else (
+        [e.strip() for e in experience.split(",") if e.strip()] if experience else [])
+    google_exp_hint = next((e for e in exp_list if e.lower() in LEVELS and e.lower() != "mid"), None)
+    instahyre_exp_hint = (min(lo for lo, _ in exp_ranges), 99) if exp_ranges else None
     locations = [l.strip() for l in (location or "").split(",") if l.strip()]
     currency = (currency or ("INR" if is_india(locations) else "USD")).upper()
     min_sal, max_sal = parse_amount(min_salary), parse_amount(max_salary)
@@ -1119,9 +1150,9 @@ def search_jobs(role: str, experience: str | None = None, location: str | None =
     def fetch(name: str) -> list[Job]:
         try:
             if name == "google":
-                got = google_search(role, experience, locations, max_google, country_code, date_restrict)
+                got = google_search(role, google_exp_hint, locations, max_google, country_code, date_restrict)
             else:
-                got = SOURCES[name](role, exp_range=exp_range, locations=locations, job_types=job_types,
+                got = SOURCES[name](role, exp_range=instahyre_exp_hint, locations=locations, job_types=job_types,
                                     days=days)
             print(f"[{name}] fetched {len(got)}", file=sys.stderr)
             stats.record(name, len(got))
@@ -1150,7 +1181,7 @@ def search_jobs(role: str, experience: str | None = None, location: str | None =
         enrich_experience(job)
         enrich_salary(job, "INR" if is_india([job.location.split(",")[-1]]) else "")
         enrich_job_type(job)
-        if (matches_experience(job, exp_range, strict)
+        if (matches_experience(job, exp_ranges, strict)
                 and matches_salary(job, min_sal, max_sal, currency, salary_only)
                 and matches_job_type(job, job_types)):
             results.append(job)
@@ -1249,7 +1280,8 @@ def print_table(jobs: list[Job]) -> None:
 def main() -> None:
     p = argparse.ArgumentParser(description="Worldwide job scraper (Google Custom Search + free job APIs)")
     p.add_argument("--role", required=True, help='Job role, e.g. "python developer"')
-    p.add_argument("--experience", help="Years (3-5, 5+, 2) or level: " + ", ".join(LEVELS))
+    p.add_argument("--experience", help="Years (3-5, 5+, 2) or level, comma-separated for multiple "
+                                       "(matches ANY of them): " + ", ".join(LEVELS))
     p.add_argument("--location", help='Comma-separated, e.g. "india,germany,remote"')
     p.add_argument("--sources", default=",".join(SOURCES), help=f"Comma list of: {', '.join(SOURCES)}")
     p.add_argument("--max-google", type=int, default=50, help="Max Google results (10 per API call)")
@@ -1273,7 +1305,7 @@ def main() -> None:
 
     job_types = [t.strip().lower() for t in (a.job_type or "").split(",") if t.strip()]
     try:
-        parse_experience_arg(a.experience), parse_amount(a.min_salary), parse_amount(a.max_salary)
+        parse_experience_args(a.experience), parse_amount(a.min_salary), parse_amount(a.max_salary)
         if bad := [t for t in job_types if t not in JOB_TYPES]:
             raise ValueError(f"Unknown job type {bad}. Use: {', '.join(JOB_TYPES)}")
     except ValueError as e:

@@ -54,7 +54,7 @@ python job_scraper.py --role "product manager" --location "london" --sources goo
 | Option | Meaning |
 |---|---|
 | `--role` | Every word (or a synonym, e.g. developer ≈ engineer) must be in the job title |
-| `--experience` | `3-5`, `5+`, `2`, or a level: intern, entry, junior, mid, senior, lead, staff, principal |
+| `--experience` | `3-5`, `5+`, `2`, or a level: intern, entry, junior, mid, senior, lead, staff, principal. Comma-separated for multiple (matches ANY of them), e.g. `0-1,5+` |
 | `--location` | Comma-separated cities/countries/`remote` |
 | `--sources` | Subset of `google,careers,instahyre,cutshort,internshala,adzuna,jooble,jobvetta,serpapi,himalayas,remotive,arbeitnow,remoteok,jobicy` |
 | `--max-google` | Google results (10 per API call; max 100) |

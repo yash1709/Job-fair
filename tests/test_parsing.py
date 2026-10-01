@@ -15,7 +15,7 @@ from job_scraper import (
     Job, _fuzzy_key, fmt_exp, fmt_posted, fmt_salary, fmt_type, is_india, iso_from_relative,
     linkedin_company_url, matches_experience, matches_job_type, matches_location, matches_posted,
     matches_role, matches_salary, normalize_job_type, parse_amount, parse_experience_arg,
-    parse_salary_text, slugify, sort_jobs, window_days,
+    parse_experience_args, parse_salary_text, slugify, sort_jobs, window_days,
 )
 
 
@@ -147,18 +147,31 @@ def test_matches_location_generic_india_not_confused_with_indiana():
 
 def test_matches_experience_within_range():
     job = Job(title="x", exp_min=3, exp_max=5)
-    assert matches_experience(job, (2, 6), strict=False)
+    assert matches_experience(job, [(2, 6)], strict=False)
 
 
 def test_matches_experience_outside_range():
     job = Job(title="x", exp_min=8, exp_max=10)
-    assert not matches_experience(job, (0, 2), strict=False)
+    assert not matches_experience(job, [(0, 2)], strict=False)
 
 
 def test_matches_experience_unknown_kept_unless_strict():
     job = Job(title="x")  # no exp info at all
-    assert matches_experience(job, (2, 5), strict=False)
-    assert not matches_experience(job, (2, 5), strict=True)
+    assert matches_experience(job, [(2, 5)], strict=False)
+    assert not matches_experience(job, [(2, 5)], strict=True)
+
+
+def test_matches_experience_multiple_ranges_is_or_not_and():
+    job = Job(title="x", exp_min=0, exp_max=1)
+    assert matches_experience(job, [(0, 1), (5, 99)], strict=False)  # matches the first range
+    assert not matches_experience(job, [(3, 4), (5, 99)], strict=False)  # matches neither
+
+
+def test_parse_experience_args_multiple_values():
+    assert parse_experience_args(["0-1", "5+"]) == [(0, 1), (5, 99)]
+    assert parse_experience_args("0-1,5+") == [(0, 1), (5, 99)]
+    assert parse_experience_args(None) == []
+    assert parse_experience_args([]) == []
 
 
 def test_matches_salary_min_threshold():

@@ -38,8 +38,9 @@ import careers
 import quota
 import stats
 import store
-from job_scraper import (DATE_WINDOWS, JOB_TYPES, LEVELS, SORTS, SOURCES, fmt_exp, fmt_posted, fmt_salary,
-                         fmt_type, is_india, linkedin_company_url, search_jobs, slugify, sort_jobs, write_csv)
+from job_scraper import (DATE_WINDOWS, EXPERIENCE_OPTIONS, JOB_TYPES, SORTS, SOURCES, fmt_exp, fmt_posted,
+                         fmt_salary, fmt_type, is_india, linkedin_company_url, search_jobs, slugify, sort_jobs,
+                         write_csv)
 
 st.set_page_config(page_title="Job Scraper", page_icon="🔍", layout="wide")
 
@@ -132,8 +133,8 @@ with tab_search:
     with st.form("search"):
         c1, c2, c3 = st.columns(3)
         role = c1.text_input("Role", placeholder="python developer")
-        experience = c2.selectbox("Experience", [""] + ["0-1", "0-2", "2-4", "3-5", "5+", "8+"] + list(LEVELS),
-                                  format_func=lambda v: v or "Any")
+        experience = c2.multiselect("Experience", EXPERIENCE_OPTIONS,
+                                    help="Select one or more - a job matching ANY of them is kept")
         location = c3.text_input("Location(s)", placeholder="india, berlin, remote")
 
         c4, c5 = st.columns(2)
@@ -159,7 +160,7 @@ with tab_search:
         else:
             try:
                 with st.spinner("Searching…"):
-                    jobs = run_search(role, experience, location, sources, country_code, date, strict,
+                    jobs = run_search(role, tuple(experience), location, sources, country_code, date, strict,
                                      min_salary, max_salary, job_type)
                 st.session_state["results"] = jobs
                 st.session_state["result_meta"] = {"role": role, "experience": experience, "location": location,
