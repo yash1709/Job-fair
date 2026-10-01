@@ -9,7 +9,7 @@ app.py's feature set within Streamlit's interaction model.
 Local run:  streamlit run streamlit_app.py
 Deploy:     point Streamlit Community Cloud's "Main file path" at this file.
 Secrets:    set GOOGLE_API_KEY / GOOGLE_CSE_ID / ADZUNA_APP_ID / ADZUNA_APP_KEY / ADZUNA_COUNTRY /
-            JOOBLE_API_KEY / JOBVETTA_API_KEY in the app's Settings -> Secrets (TOML), e.g.:
+            JOOBLE_API_KEY / JOBVETTA_API_KEY / SERPAPI_API_KEY in the app's Settings -> Secrets (TOML), e.g.:
                 GOOGLE_API_KEY = "..."
             They're copied into the environment below, since job_scraper.py reads them with os.getenv.
 """
@@ -26,7 +26,7 @@ import streamlit as st
 # Secrets set in Streamlit Cloud's "Secrets" panel arrive via st.secrets, not a .env file (.env is
 # gitignored and never deployed). Copy anything relevant into the environment before it's read.
 for _key in ("GOOGLE_API_KEY", "GOOGLE_CSE_ID", "ADZUNA_APP_ID", "ADZUNA_APP_KEY", "ADZUNA_COUNTRY",
-            "JOOBLE_API_KEY", "JOBVETTA_API_KEY"):
+            "JOOBLE_API_KEY", "JOBVETTA_API_KEY", "SERPAPI_API_KEY"):
     try:
         if _key in st.secrets and not os.environ.get(_key):
             os.environ[_key] = str(st.secrets[_key])

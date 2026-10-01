@@ -29,6 +29,9 @@ DAILY_LIMITS: dict[str, int] = {
     "google": int(os.getenv("GOOGLE_DAILY_LIMIT", "100")),
     "adzuna": int(os.getenv("ADZUNA_DAILY_LIMIT", "250")),
     "jooble": int(os.getenv("JOOBLE_DAILY_LIMIT", "500")),
+    # SerpApi's free plan is 100 searches/MONTH, not per day - this tracker only resets daily, so the
+    # default here is a conservative ~90/month spread (3/day) rather than the real monthly cap.
+    "serpapi": int(os.getenv("SERPAPI_DAILY_LIMIT", "3")),
 }
 
 

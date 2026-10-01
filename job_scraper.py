@@ -1004,6 +1004,56 @@ def jobvetta(role: str, locations: list[str] | None = None, days: float | None =
     return out
 
 
+def serpapi_jobs(role: str, locations: list[str] | None = None, days: float | None = None, **_) -> list[Job]:
+    """Google Jobs results via SerpApi (free key: serpapi.com). The free plan is 100 searches/MONTH
+    (see quota.py's SERPAPI_DAILY_LIMIT), so this spends one call per search - no multi-page pagination,
+    unlike Adzuna/Jooble which have much more generous free quotas."""
+    key = os.getenv("SERPAPI_API_KEY")
+    if not key:
+        print("[serpapi] SERPAPI_API_KEY not set - skipping.", file=sys.stderr)
+        return []
+    if not quota.allow("serpapi"):
+        print("[serpapi] daily quota used up - skipping.", file=sys.stderr)
+        return []
+
+    locations = locations or []
+    where = next((l for l in locations if l.lower() != "remote"), "")
+    query = f"{role} in {where}" if where else role
+    if any(l.lower() == "remote" for l in locations):
+        query += " remote"
+    params = {"engine": "google_jobs", "q": query, "api_key": key, "hl": "en"}
+    if where:
+        params["location"] = where
+    if is_india(locations):
+        params["gl"] = "in"
+    if days:
+        chip = "today" if days <= 1 else "3days" if days <= 3 else "week" if days <= 7 else "month"
+        params["chips"] = f"date_posted:{chip}"
+
+    r = requests.get("https://serpapi.com/search.json", params=params, timeout=TIMEOUT)
+    r.raise_for_status()
+    data = r.json()
+    if data.get("error"):
+        print(f"[serpapi] API error: {data['error']}", file=sys.stderr)
+        return []
+
+    out = []
+    for j in data.get("jobs_results", []):
+        # No separate structured fields for posted-date/job-type in practice (verified against a live
+        # response) - just a short, unstructured "extensions" list like ["3 days ago", "Full‑time"].
+        extensions = " ".join(j.get("extensions") or [])
+        apply_opts = j.get("apply_options") or []
+        url = j.get("source_link") or (apply_opts[0].get("link", "") if apply_opts else j.get("share_link", ""))
+        loc = j.get("location", "")
+        out.append(Job(title=strip_html(j.get("title", "")), company=j.get("company_name", ""),
+                       location=loc, url=url, source="serpapi",
+                       description=strip_html(j.get("description", "")),
+                       posted=iso_from_relative(extensions),
+                       job_type=normalize_job_type(re.sub(r"[^\w\s]", " ", extensions)),
+                       remote="remote" in loc.lower() or "work from home" in extensions.lower()))
+    return out
+
+
 def company_careers(role: str, **_) -> list[Job]:
     """Jobs straight from company careers pages (Greenhouse / Lever / Ashby / SmartRecruiters boards
     of the companies in companies.json). See careers.py."""
@@ -1031,7 +1081,7 @@ SOURCES = {
     "careers": company_careers,
     # India
     "instahyre": instahyre, "cutshort": cutshort, "internshala": internshala,
-    "adzuna": adzuna, "jooble": jooble, "jobvetta": jobvetta,
+    "adzuna": adzuna, "jooble": jooble, "jobvetta": jobvetta, "serpapi": serpapi_jobs,
     # Global / remote
     "himalayas": himalayas, "remotive": remotive, "arbeitnow": arbeitnow, "remoteok": remoteok, "jobicy": jobicy,
 }
@@ -1060,7 +1110,7 @@ def search_jobs(role: str, experience: str | None = None, location: str | None =
     if bad := [t for t in job_types if t not in JOB_TYPES]:
         raise ValueError(f"Unknown job type {bad}. Use: {', '.join(JOB_TYPES)}")
 
-    metered = {"google", "adzuna", "jooble", "jobvetta"}
+    metered = {"google", "adzuna", "jooble", "jobvetta", "serpapi"}
     if any(s in metered for s in sources) and not quota.metered_sources_allowed():
         print(f"[quota] app-wide search rate exceeded - skipping metered sources this search: "
               f"{sorted(set(sources) & metered)}", file=sys.stderr)

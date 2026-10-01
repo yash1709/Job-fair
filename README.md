@@ -12,6 +12,7 @@ Searches jobs worldwide and filters them by **role**, **experience** and **locat
 | `adzuna` | Yes (free) | India + 15 other countries |
 | `jooble` | Yes (free) | India + ~70 other countries |
 | `jobvetta` | Yes (free, 50 calls/day) | India jobs checked against employers' own sites, via Jobvetta's MCP server. One call per search (up to 10 jobs), repeat searches reused for 30 min; skipped for non-Indian locations |
+| `serpapi` | Yes (free, 100 searches/**month**) | Google Jobs results worldwide, via [SerpApi](https://serpapi.com). One call per search, no pagination - the free plan's monthly cap is much tighter than the other sources' daily ones, so `SERPAPI_DAILY_LIMIT` (default 3/day) spreads it out instead of letting one busy day burn the whole month |
 | `himalayas` | No | Remote jobs; limited to India-eligible ones when the location is in India |
 | `remotive`, `remoteok`, `jobicy` | No | Remote jobs worldwide |
 | `arbeitnow` | No | Europe (mostly Germany) + remote |
@@ -55,7 +56,7 @@ python job_scraper.py --role "product manager" --location "london" --sources goo
 | `--role` | Every word (or a synonym, e.g. developer ≈ engineer) must be in the job title |
 | `--experience` | `3-5`, `5+`, `2`, or a level: intern, entry, junior, mid, senior, lead, staff, principal |
 | `--location` | Comma-separated cities/countries/`remote` |
-| `--sources` | Subset of `google,careers,instahyre,cutshort,internshala,adzuna,jooble,jobvetta,himalayas,remotive,arbeitnow,remoteok,jobicy` |
+| `--sources` | Subset of `google,careers,instahyre,cutshort,internshala,adzuna,jooble,jobvetta,serpapi,himalayas,remotive,arbeitnow,remoteok,jobicy` |
 | `--max-google` | Google results (10 per API call; max 100) |
 | `--country-code` | Google `gl` boost, e.g. `in`, `us`, `de` |
 | `--date` | Posted within: `d1` (24 hours), `d2`, `d3`, `d7`; web UI defaults to `d1`, CLI defaults to any time. Applies to every source |
@@ -96,10 +97,11 @@ the app's **Settings → Secrets**, as TOML:
 ```toml
 GOOGLE_API_KEY = "..."
 GOOGLE_CSE_ID = "..."
-ADZUNA_APP_ID = "3767214391d5fcb4bb509587d68b01a2"
+ADZUNA_APP_ID = "..."
 ADZUNA_APP_KEY = "..."
 JOOBLE_API_KEY = "..."
 JOBVETTA_API_KEY = "..."
+SERPAPI_API_KEY = "..."
 ```
 `streamlit_app.py` copies these into the environment on startup, since `job_scraper.py` reads them with
 `os.getenv`. Sources whose key is missing are skipped, same as running locally without them.
