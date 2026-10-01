@@ -3,8 +3,8 @@
 The Flask app (app.py) can't run on Streamlit Community Cloud, which only knows how to execute
 Streamlit scripts (`streamlit run <file>`), not a Flask app that starts its own server. This file
 is the equivalent UI built with Streamlit widgets, on top of the same job_scraper.py / careers.py
-logic the Flask app uses - including bookmarks/hide, saved-search alerts, pagination, and a status
-view, mirroring app.py's feature set within Streamlit's interaction model.
+logic the Flask app uses - including saved-search alerts, pagination, and a status view, mirroring
+app.py's feature set within Streamlit's interaction model.
 
 Local run:  streamlit run streamlit_app.py
 Deploy:     point Streamlit Community Cloud's "Main file path" at this file.
@@ -19,7 +19,6 @@ import math
 import os
 import threading
 import time
-import urllib.parse
 from datetime import datetime
 
 import streamlit as st
@@ -80,19 +79,10 @@ def start_alerts():
 start_background_refresh()  # body only ever runs once per app process, however many visitors call it
 start_alerts()
 
-# --- anonymous per-browser-session visitor id, for private bookmarks/saved searches ---------------
+# --- anonymous per-browser-session visitor id, for private saved searches -------------------------
 if "visitor_id" not in st.session_state:
     st.session_state["visitor_id"] = store.new_visitor_id()
 VID = st.session_state["visitor_id"]
-
-# --- one-shot row-action links (?job_action=bookmarked&job_url=...&on=1), Flask-style ------------
-qp = st.query_params
-if "job_action" in qp:
-    job_url, action, on = qp.get("job_url", ""), qp.get("job_action", ""), qp.get("on", "1") == "1"
-    if job_url and action in ("bookmarked", "applied", "hidden"):
-        store.set_action(VID, job_url, action, on=on)
-    st.query_params.clear()
-    st.rerun()
 
 
 def careers_loading(sources: list[str]) -> bool:
@@ -120,10 +110,6 @@ def run_search(role, experience, location, sources, country_code, date, strict,
                          min_salary, max_salary, tuple(job_types))
 
 
-def action_link(job_url: str, action: str, on: bool) -> str:
-    return f"?job_action={action}&job_url={urllib.parse.quote(job_url, safe='')}&on={'1' if on else '0'}"
-
-
 # ---------------------------------------------------------------------------
 # UI
 # ---------------------------------------------------------------------------
@@ -135,8 +121,6 @@ st.markdown("""<style>
  .jobtable th{background:#fafafa;text-align:left;padding:8px 10px;font-size:13px;border-bottom:1px solid #ddd}
  .jobtable td{padding:8px 10px;border-bottom:1px solid #eee;font-size:14px;vertical-align:top}
  .jobtable a{color:#1a73e8;text-decoration:none} .muted{color:#777;font-size:12px}
- .jobtable tr.hidden-row{opacity:.5}
- .rowact a{margin-right:6px;text-decoration:none}
 </style>""", unsafe_allow_html=True)
 
 st.title("🔍 Job Scraper")
@@ -166,9 +150,7 @@ with tab_search:
                             format_func=lambda v: DATE_WINDOWS.get(v, "Any time"))
 
         sources = st.multiselect("Sources", list(SOURCES), default=list(SOURCES))
-        cchk1, cchk2 = st.columns(2)
-        strict = cchk1.checkbox("Strict experience (drop jobs with no detectable experience info)")
-        show_hidden = cchk2.checkbox("Show hidden jobs")
+        strict = st.checkbox("Strict experience (drop jobs with no detectable experience info)")
         submitted = st.form_submit_button("Search", type="primary")
 
     if submitted:
@@ -200,51 +182,41 @@ with tab_search:
                     "companies). These results only include the ones loaded so far — search again in a "
                     "minute for all of them.")
 
-        my_actions = store.get_actions(VID)
         jobs = sort_jobs(jobs, st.session_state.get("sort", "relevance"), cur)
-        visible_jobs = jobs if show_hidden else [j for j in jobs if "hidden" not in my_actions.get(j.url, ())]
-        total = len(visible_jobs)
+        total = len(jobs)
         pages = max(1, math.ceil(total / PAGE_SIZE))
         page = min(max(1, st.session_state.get("page", 1)), pages)
 
         top = st.columns([3, 1, 1])
-        hidden_n = len(jobs) - total
-        top[0].write(f"**{total} jobs found**" + (f" ({hidden_n} hidden)" if hidden_n else ""))
+        top[0].write(f"**{total} jobs found**")
         sort = top[1].selectbox("Sort", list(SORTS), format_func=lambda v: SORTS[v],
                                 label_visibility="collapsed", key="sort",
                                 on_change=lambda: st.session_state.update(page=1))
 
-        if visible_jobs:
+        if jobs:
             buf = io.StringIO()
-            write_csv(visible_jobs, buf)
+            write_csv(jobs, buf)
             name = ("jobs-" + "-".join(filter(None, [slugify(meta["role"]), slugify(meta["location"])]))
                    + datetime.now().strftime("-%Y%m%d") + ".csv")
             top[2].download_button("⬇ CSV", "﻿" + buf.getvalue(), file_name=name, mime="text/csv")
 
-            page_jobs = visible_jobs[(page - 1) * PAGE_SIZE: page * PAGE_SIZE]
+            page_jobs = jobs[(page - 1) * PAGE_SIZE: page * PAGE_SIZE]
             rows = []
             for j in page_jobs:
-                acts = my_actions.get(j.url, set())
                 tags = "".join(f'<span class="tag {t.lower()}">{t}</span>' for t in fmt_type(j).split(" · ") if t != "-")
-                bm, ap, hd = "🔖" if "bookmarked" in acts else "📑", "✅" if "applied" in acts else "⬜", \
-                    "👁" if "hidden" in acts else "✕"
-                row_actions = (
-                    f'<a href="{action_link(j.url, "bookmarked", "bookmarked" not in acts)}" title="Bookmark">{bm}</a>'
-                    f'<a href="{action_link(j.url, "applied", "applied" not in acts)}" title="Mark applied">{ap}</a>'
-                    f'<a href="{action_link(j.url, "hidden", "hidden" not in acts)}" title="Hide/unhide">{hd}</a>')
                 rows.append(
-                    f'<tr class="{"hidden-row" if "hidden" in acts else ""}">'
+                    "<tr>"
                     f"<td><a href='{j.url}' target='_blank' rel='noopener'>{j.title}</a></td>"
                     f"<td>{j.company} <a href='{linkedin_company_url(j.company)}' target='_blank' rel='noopener' "
                     f"class='muted' title='Best-guess LinkedIn page for {j.company} (not verified - may be "
                     f"wrong or missing)'>in</a></td><td>{j.location}</td><td>{fmt_exp(j)}</td>"
                     f"<td style='white-space:nowrap'>{fmt_salary(j, cur)}</td><td>{tags or '-'}</td>"
                     f"<td class='muted' title='{j.posted}'>{fmt_posted(j)}</td><td class='muted'>{j.source}</td>"
-                    f"<td class='rowact'>{row_actions}</td></tr>"
+                    "</tr>"
                 )
             table = ("<table class='jobtable'><tr><th>Title</th><th>Company</th><th>Location</th>"
                      "<th>Experience</th><th>Salary / yr</th><th>Type</th><th>Posted</th><th>Source</th>"
-                     "<th>Actions</th></tr>" + "".join(rows) + "</table>")
+                     "</tr>" + "".join(rows) + "</table>")
             st.markdown(table, unsafe_allow_html=True)
 
             if pages > 1:

@@ -133,9 +133,10 @@ and Amazon are what push total memory up (each can return hundreds to thousands 
 lowers the per-board cap on just those sources (e.g. Workday from 100 jobs/company to 40), trading some depth on
 the biggest employers for a meaningfully smaller memory footprint, without dropping any company outright.
 
-**Automated tests (`tests/`, run with `pytest tests/`).** 56 tests cover the parsing/matching logic (salary,
-experience, role and location matching, job-type detection, date windows, sorting) and the saved-search/bookmark
-store and quota tracker - all offline, no network needed. Several encode real bugs found by hand during
+**Automated tests (`tests/`, run with `pytest tests/`).** The suite covers the parsing/matching logic (salary,
+experience, role and location matching, job-type detection, date windows, sorting), the saved-search store and
+quota tracker, and the discover/prune company-discovery pipeline - all offline, no network needed. Several
+encode real bugs found by hand during
 development (a role-matching regression, a India/Indiana location mixup, a salary formatting edge case) so the
 next one gets caught automatically instead of needing another manual debugging session. A GitHub Actions
 workflow (`.github/workflows/tests.yml`) runs them on every push.
@@ -152,15 +153,13 @@ and adding a headless browser to work around that would be a poor trade against 
 global employers not already in `companies.json` (Google, Microsoft, Apple, Meta, Uber, ...) are reachable only
 through the Google Custom Search source, which needs `GOOGLE_API_KEY` / `GOOGLE_CSE_ID` set.
 
-**Bookmarks, hide, mark-applied, saved searches, and alerts (`store.py`, `alerts.py`).** Every job row has
-🔖 bookmark / ✅ mark-applied / ✕ hide actions, private to your own browser (an anonymous id in a cookie for the
-Flask app, in session state for the Streamlit app - no login). Hidden jobs drop out of results by default (a
-"show hidden" toggle brings them back). Below a search's results, "🔔 Save & alert me" stores the search
-criteria plus an optional webhook URL (a Slack "Incoming Webhook" or Discord channel webhook both work as-is,
-or any URL of your own that accepts a JSON POST); a background thread re-runs every saved search every 30
-minutes and posts any newly-found jobs to its webhook. Manage saved searches (check now / delete) under
-"🔔 Saved searches". This state lives in a local SQLite file (`job_scraper.db`) - on most free hosts that's
-ephemeral across a redeploy, which is an acceptable trade-off for bookmarks and alerts.
+**Saved searches and alerts (`store.py`, `alerts.py`).** Below a search's results, "🔔 Save & alert me" stores
+the search criteria plus an optional webhook URL (a Slack "Incoming Webhook" or Discord channel webhook both
+work as-is, or any URL of your own that accepts a JSON POST); a background thread re-runs every saved search
+every 30 minutes and posts any newly-found jobs to its webhook. Private to your own browser (an anonymous id in
+a cookie for the Flask app, in session state for the Streamlit app - no login). Manage saved searches (check
+now / delete) under "🔔 Saved searches". This state lives in a local SQLite file (`job_scraper.db`) - on most
+free hosts that's ephemeral across a redeploy, which is an acceptable trade-off for alerts.
 
 **Pagination.** Results are paginated at 50 per page rather than rendered as one unbounded table, which was
 both a usability problem and, at large result counts, a real rendering cost.

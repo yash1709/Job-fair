@@ -57,14 +57,11 @@ PAGE = """<!doctype html>
  .group{display:flex;gap:6px;align-items:end} a{color:#1a73e8;text-decoration:none} .muted{color:#777;font-size:12px}
  .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap} .actions select{min-width:0}
  th a{color:inherit} th a:hover{color:#1a73e8}
- .rowact a{margin-right:8px;font-size:13px;text-decoration:none;white-space:nowrap}
- .rowact a.on{font-weight:700}
  .save-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
  .save-form input{min-width:220px}
  .pager{display:flex;gap:10px;align-items:center;justify-content:center;padding:16px 0}
  .pager a,.pager span{padding:6px 12px;border-radius:6px;font-size:14px}
  .pager a{background:#fff;border:1px solid #ccc}
- tr.hidden-row{opacity:.5}
 </style></head><body>
 <header><b>Job Scraper</b> — Google Custom Search + free job APIs
  <nav><a href="{{ url_for('saved_searches') }}">🔔 Saved searches</a><a href="{{ url_for('status_page') }}">⚙ Status</a></nav>
@@ -95,9 +92,7 @@ PAGE = """<!doctype html>
   <label style="flex-direction:row"><input type="checkbox" name="sources" value="{{s}}" class="source" style="min-width:0"
    {{ 'checked' if s in q.sources }}>{{s}}</label>{% endfor %}
   <label style="flex-direction:row"><input type="checkbox" name="strict" value="1" style="min-width:0"
-   {{ 'checked' if q.strict }}>strict experience</label>
-  <label style="flex-direction:row"><input type="checkbox" name="show_hidden" value="1" style="min-width:0"
-   {{ 'checked' if q.show_hidden }}>show hidden</label></div>
+   {{ 'checked' if q.strict }}>strict experience</label></div>
  <button>Search</button>
 </form>
 <main>
@@ -120,22 +115,15 @@ PAGE = """<!doctype html>
    </form>
   </div>{% endif %}</div>
  <table><tr><th>Title</th><th>Company</th><th>Location</th><th>Experience</th><th><a href="{{ sort_url('salary_asc' if sort=='salary_desc' else 'salary_desc') }}"
-   title="Sort by salary">Salary / yr {{ '▼' if sort=='salary_desc' else '▲' if sort=='salary_asc' else '↕' }}</a></th><th>Type</th><th>Posted</th><th>Source</th><th>Actions</th></tr>
- {% for j in jobs %}<tr {{ 'class=hidden-row' if 'hidden' in my_actions.get(j.url, []) }}>
+   title="Sort by salary">Salary / yr {{ '▼' if sort=='salary_desc' else '▲' if sort=='salary_asc' else '↕' }}</a></th><th>Type</th><th>Posted</th><th>Source</th></tr>
+ {% for j in jobs %}<tr>
   <td><a href="{{ j.url }}" target="_blank" rel="noopener">{{ j.title }}</a></td>
   <td>{{ j.company }} <a href="{{ linkedin_company_url(j.company) }}" target="_blank" rel="noopener" class="muted" title="Best-guess LinkedIn page for {{ j.company }} (not verified - may be wrong or missing)">in</a></td>
   <td>{{ j.location }}</td><td>{{ fmt_exp(j) }}</td>
   <td class="salary">{{ fmt_salary(j, cur) }}</td>
   <td class="type">{% for t in fmt_type(j).split(" · ") if t != "-" %}<span class="tag {{ t|lower }}">{{ t }}</span> {% endfor %}</td>
   <td class="muted" title="{{ j.posted }}">{{ fmt_posted(j) }}</td><td class="muted">{{ j.source }}</td>
-  <td class="rowact">{% set acts = my_actions.get(j.url, []) %}
-   <a class="{{ 'on' if 'bookmarked' in acts }}" title="Bookmark"
-    href="{{ action_url(j.url, 'bookmarked', 'bookmarked' not in acts) }}">{{ '🔖' if 'bookmarked' in acts else '📑' }}</a>
-   <a class="{{ 'on' if 'applied' in acts }}" title="Mark applied"
-    href="{{ action_url(j.url, 'applied', 'applied' not in acts) }}">{{ '✅' if 'applied' in acts else '⬜' }}</a>
-   <a title="{{ 'Unhide' if 'hidden' in acts else 'Hide' }}"
-    href="{{ action_url(j.url, 'hidden', 'hidden' not in acts) }}">{{ '👁' if 'hidden' in acts else '✕' }}</a>
-  </td></tr>{% endfor %}
+ </tr>{% endfor %}
  </table>
  {% if pages > 1 %}<div class="pager">
   {% if page > 1 %}<a href="{{ page_url(page-1) }}">← Prev</a>{% endif %}
@@ -234,7 +222,6 @@ def read_query(args) -> dict:
         "date": args.get("date", "") if args.get("date", "") in DATE_WINDOWS else "",
         "sources": args.getlist("sources") or list(SOURCES),
         "strict": bool(args.get("strict")),
-        "show_hidden": bool(args.get("show_hidden")),
         "min_salary": args.get("min_salary", "").strip(),
         "max_salary": args.get("max_salary", "").strip(),
         "job_type": [t for t in args.getlist("job_type") if t in JOB_TYPES],
@@ -242,7 +229,7 @@ def read_query(args) -> dict:
 
 
 def run_search(q: dict) -> list:
-    key = repr(sorted((k, str(v)) for k, v in q.items() if k != "show_hidden"))
+    key = repr(sorted((k, str(v)) for k, v in q.items()))
     hit = CACHE.get(key)
     if hit and time.time() - hit[0] < CACHE_TTL:
         return hit[1]
@@ -269,8 +256,6 @@ def index():
     if not request.args:  # first-ever page load (no search submitted yet): show all job types as selected
         q["job_type"] = ["full-time", "internship"]  # not "remote" too - that would narrow, not include-all
         q["date"] = "d1"  # and default "Posted within" to the last 24 hours
-    vid = get_visitor_id()
-    my_actions = store.get_actions(vid)
     jobs, error, total = None, None, 0
     if q["role"]:
         try:
@@ -283,8 +268,6 @@ def index():
     pages = 1
     if jobs is not None:
         jobs = sort_jobs(jobs, sort, cur)  # after the cache, so re-sorting never re-scrapes
-        if not q["show_hidden"]:
-            jobs = [j for j in jobs if "hidden" not in my_actions.get(j.url, ())]
         total = len(jobs)
         pages = max(1, math.ceil(total / PAGE_SIZE))
         page = min(page, pages)
@@ -300,33 +283,18 @@ def index():
         args["page"] = [str(value)]
         return url_for("index", **args)
 
-    def action_url(job_url: str, kind: str, on: bool) -> str:
-        return url_for("do_action", job_url=job_url, type=kind, on="1" if on else "0",
-                       next=request.full_path)
-
     careers_note = None
     if jobs is not None and careers_loading(q):
         st = careers.status()
         careers_note = (f"Company careers pages are still loading ({st['done']} of {st['total'] or '…'} companies). "
                         "These results only include the ones loaded so far. Search again in a minute for all of them.")
     return render_template_string(PAGE, q=q, jobs=jobs, total=total, error=error, cur=cur,
-                                  sources=list(SOURCES), careers_note=careers_note, my_actions=my_actions,
+                                  sources=list(SOURCES), careers_note=careers_note,
                                   levels=list(LEVELS), date_windows=DATE_WINDOWS, job_types=JOB_TYPES,
                                   sorts=SORTS, sort=sort, sort_url=sort_url, page=page, pages=pages,
-                                  page_url=page_url, action_url=action_url,
+                                  page_url=page_url,
                                   fmt_exp=fmt_exp, fmt_salary=fmt_salary, fmt_type=fmt_type,
                                   fmt_posted=fmt_posted, linkedin_company_url=linkedin_company_url)
-
-
-@app.route("/action")
-def do_action():
-    vid = get_visitor_id()
-    job_url = request.args.get("job_url", "")
-    kind = request.args.get("type", "")
-    on = request.args.get("on", "1") == "1"
-    if job_url and kind in ("bookmarked", "applied", "hidden"):
-        store.set_action(vid, job_url, kind, on=on)
-    return redirect(request.args.get("next") or url_for("index"))
 
 
 @app.route("/save-search", methods=["POST"])

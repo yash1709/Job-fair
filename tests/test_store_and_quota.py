@@ -1,4 +1,4 @@
-"""Tests for store.py (saved searches / bookmarks) and quota.py (API quota tracking).
+"""Tests for store.py (saved searches) and quota.py (API quota tracking).
 
 Uses a throwaway sqlite file and quota-state file per test run (monkeypatched paths) so these tests
 never touch the real job_scraper.db / quota_state.json a running app is using.
@@ -59,21 +59,6 @@ def test_filter_new_only_reports_unseen_urls_once(temp_store):
     assert second == []
     third = temp_store.filter_new(sid, ["http://a", "http://c"])
     assert third == ["http://c"]  # only the genuinely new one
-
-
-def test_job_actions_bookmark_and_unbookmark(temp_store):
-    vid = temp_store.new_visitor_id()
-    temp_store.set_action(vid, "http://job1", "bookmarked")
-    assert temp_store.get_actions(vid) == {"http://job1": {"bookmarked"}}
-    temp_store.set_action(vid, "http://job1", "bookmarked", on=False)
-    assert temp_store.get_actions(vid) == {}
-
-
-def test_job_actions_multiple_actions_same_job(temp_store):
-    vid = temp_store.new_visitor_id()
-    temp_store.set_action(vid, "http://job1", "bookmarked")
-    temp_store.set_action(vid, "http://job1", "applied")
-    assert temp_store.get_actions(vid)["http://job1"] == {"bookmarked", "applied"}
 
 
 def test_quota_allows_until_limit(temp_quota):
