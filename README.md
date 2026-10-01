@@ -257,11 +257,21 @@ python discover.py --limit 500           # check only the first 500 untracked ca
 **Collision safety.** The same literal slug can belong to a completely unrelated company on the same ATS (e.g.
 Bird Rides' Greenhouse board isn't YC's Bird, a messaging company). `yc_excluded.json` / `nse_excluded.json` are
 manually-curated lists of confirmed collisions found this way, so they're never re-added. Short slugs (under 5
-characters) are where this happens most - common English words are more likely to already be claimed by someone
-else - so a new hit that short is written to `yc_needs_review.json` / `nse_needs_review.json` for a human to check,
-instead of being auto-added. A hit is also skipped outright (no review needed) if nothing on the board was posted
-in the last ~400 days - probing NSE tickers surfaced a real case of this: a single 2022 SmartRecruiters posting
-for an unrelated small company that happened to share a ticker's slug, long since abandoned.
+characters) are where this happens most for YC - common English words are more likely to already be claimed by
+someone else - so a new hit that short is written to `yc_needs_review.json` for a human to check, instead of
+being auto-added. A hit is also skipped outright if nothing on the board was posted in the last ~400 days -
+probing NSE tickers surfaced a real case of this: a single 2022 SmartRecruiters posting for an unrelated small
+company that happened to share a ticker's slug, long since abandoned.
+
+**The NSE/BSE pool never auto-adds anything.** A first real run found that ticker-based slug guessing has a much
+higher collision rate than YC's own slugs: `tcs`, `indigo`, `metropolis`, `clara`, `campus`, `karbon`, `bluestone`,
+and `sona` all matched a real, currently-hiring board on Greenhouse/Ashby/Lever - none of them the actual NSE-listed
+company (e.g. `tcs` was a UK nursing-staffing agency, `indigo` a US company hiring in San Francisco, neither
+related to Tata Consultancy Services or IndiGo Airlines). Ticker symbols are short, common words that unrelated
+global companies also pick as their ATS slug far more often than YC's own brand names collide. So for this pool,
+every hit additionally needs at least one India-based posting to even be considered (a real NSE-listed company
+should have some; lacking that, it's discarded outright, no review needed) - and even then it only ever goes to
+`nse_needs_review.json` for a human to confirm before manually adding it to `companies.json`, never straight in.
 
 ### Removing companies that stopped hiring (`prune.py`)
 

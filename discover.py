@@ -37,6 +37,7 @@ from pathlib import Path
 import requests
 
 import careers
+from job_scraper import INDIA_CITIES
 
 CANDIDATES_FILE = Path(__file__).with_name("yc_candidates.json")
 EXCLUDED_FILE = Path(__file__).with_name("yc_excluded.json")
@@ -170,36 +171,54 @@ def nse_name(slug: str) -> str | None:
     return _nse_names_cache.get(slug.lower())
 
 
-def _recently_posted(ats: str, slug: str, within_days: int = MAX_HIT_AGE_DAYS) -> bool:
+def _verify_hit(ats: str, slug: str, within_days: int = MAX_HIT_AGE_DAYS) -> tuple[bool, bool]:
     """Only called for an actual hit (never for the bulk probe), so this extra full-board fetch doesn't
-    multiply the cost of checking thousands of candidates. Requires at least one job posted within
-    `within_days` - otherwise the "hit" is just a long-abandoned board, not evidence of live hiring."""
+    multiply the cost of checking thousands of candidates. Returns (recent_enough, has_india_posting):
+    - recent_enough: at least one job posted within `within_days` - otherwise the "hit" is just a long-
+      abandoned board, not evidence of live hiring (found probing NSE ticker "aaradhya": a single 2022
+      SmartRecruiters posting for an unrelated small company).
+    - has_india_posting: at least one job located in India. Used as a same-slug-collision signal for the
+      NSE/BSE pool, where it matters a lot more than for YC: a ticker like "tcs" or "indigo" is also a
+      generic enough word that unrelated global companies pick the same Greenhouse/Ashby slug for
+      themselves - probing found real, currently-hiring collisions for both (a UK nursing agency and a
+      US company, neither related to Tata Consultancy Services or IndiGo Airlines). A real match for an
+      India-headquartered listed company should have at least some India-based postings; lacking that,
+      it's essentially certainly the wrong company."""
     try:
         jobs = careers.fetch_board({"ats": ats, "slug": slug, "name": slug})
     except Exception:
-        return False
+        return False, False
     cutoff = datetime.now(timezone.utc) - timedelta(days=within_days)
+    recent = has_india = False
     for j in jobs:
-        raw = (j.get("posted") or "").strip()
-        if not raw:
-            continue
-        if re.fullmatch(r"\d{10,13}", raw):
-            raw = datetime.fromtimestamp(int(raw) / (1000 if len(raw) > 10 else 1), tz=timezone.utc).isoformat()
-        try:
-            dt = datetime.fromisoformat(raw.replace("Z", "+00:00").replace(" ", "T", 1))
-        except ValueError:
-            continue
-        if not dt.tzinfo:
-            dt = dt.replace(tzinfo=timezone.utc)
-        if dt >= cutoff:
-            return True
-    return False
+        if not has_india and any(city in (j.get("location") or "").lower() for city in INDIA_CITIES):
+            has_india = True
+        if not recent:
+            raw = (j.get("posted") or "").strip()
+            if raw:
+                if re.fullmatch(r"\d{10,13}", raw):
+                    raw = datetime.fromtimestamp(int(raw) / (1000 if len(raw) > 10 else 1),
+                                                 tz=timezone.utc).isoformat()
+                try:
+                    dt = datetime.fromisoformat(raw.replace("Z", "+00:00").replace(" ", "T", 1))
+                    if not dt.tzinfo:
+                        dt = dt.replace(tzinfo=timezone.utc)
+                    recent = dt >= cutoff
+                except ValueError:
+                    pass
+    return recent, has_india
 
 
 def discover_pool(label: str, candidates: list[str], excluded, existing: list[dict],
-                  name_resolver, workers: int, limit: int | None) -> tuple[list[dict], dict]:
+                  name_resolver, workers: int, limit: int | None,
+                  require_india_location: bool = False) -> tuple[list[dict], dict]:
     """Checks one candidate pool against every ATS in ATS, returning (accepted, review) - accepted
-    companies still need to be appended to companies.json and saved by the caller."""
+    companies still need to be appended to companies.json and saved by the caller.
+
+    require_india_location=True (the NSE/BSE pool) additionally requires an India-based posting to avoid
+    same-slug collisions with unrelated global companies (see _verify_hit), and even then never
+    auto-accepts - every hit goes to `review` for a human to confirm, since that signal alone isn't fully
+    reliable either (a real collision was found that still had a genuine, unrelated India office)."""
     tracked_slugs = {c["slug"].lower() for c in existing}
     tracked_names = {re.sub(r"[^a-z0-9]", "", c["name"].lower()) for c in existing}
 
@@ -235,11 +254,22 @@ def discover_pool(label: str, candidates: list[str], excluded, existing: list[di
             review[slug] = {"ats": ats, "jobs": n, "reason": f"slug shorter than {MIN_SAFE_SLUG_LENGTH} chars - "
                                                              "higher risk of being an unrelated company's board"}
             continue
-        if not _recently_posted(ats, slug):
+        recent, has_india = _verify_hit(ats, slug)
+        if not recent:
             print(f"SKIP [{label}] {slug} | {ats} | {n} jobs, but nothing posted in the last "
                  f"{MAX_HIT_AGE_DAYS} days - likely an abandoned board", flush=True)
             continue
         name = name_resolver(slug) or slug.replace("-", " ").title()
+        if require_india_location:
+            if not has_india:
+                print(f"SKIP [{label}] {slug} | {ats} | {n} jobs, no India-based postings - almost "
+                     "certainly a same-slug collision with an unrelated company", flush=True)
+                continue
+            review[slug] = {"ats": ats, "jobs": n, "name": name,
+                            "reason": "has an India-based posting, but ticker-slug matches are unreliable "
+                                     "(confirmed collisions found even with an India office) - verify this "
+                                     "is really the right company before adding to companies.json"}
+            continue
         accepted.append({"name": name, "ats": ats, "slug": slug})
     return accepted, review
 
@@ -285,10 +315,12 @@ def main() -> None:
     pools = []
     if "yc" in sources:
         pools.append(dict(label="YC", candidates_file=CANDIDATES_FILE, excluded_file=EXCLUDED_FILE,
-                          review_file=REVIEW_FILE, refresh=refresh_candidates, name_resolver=yc_name))
+                          review_file=REVIEW_FILE, refresh=refresh_candidates, name_resolver=yc_name,
+                          require_india_location=False))
     if "nse" in sources:
         pools.append(dict(label="NSE", candidates_file=NSE_CANDIDATES_FILE, excluded_file=NSE_EXCLUDED_FILE,
-                          review_file=NSE_REVIEW_FILE, refresh=refresh_nse_candidates, name_resolver=nse_name))
+                          review_file=NSE_REVIEW_FILE, refresh=refresh_nse_candidates, name_resolver=nse_name,
+                          require_india_location=True))
 
     for pool in pools:
         candidates = pool["refresh"]() if args.refresh_candidates else json.loads(
@@ -296,8 +328,8 @@ def main() -> None:
         excluded = json.loads(pool["excluded_file"].read_text(encoding="utf-8")) if pool["excluded_file"].exists() \
             else {}
 
-        accepted, review = discover_pool(pool["label"], candidates, excluded, existing,
-                                         pool["name_resolver"], args.workers, args.limit)
+        accepted, review = discover_pool(pool["label"], candidates, excluded, existing, pool["name_resolver"],
+                                         args.workers, args.limit, pool["require_india_location"])
         if accepted:
             existing = existing + accepted
             careers.save_companies(existing)
