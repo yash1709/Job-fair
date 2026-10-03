@@ -7,9 +7,9 @@ companies.json into pruned_companies.json. discover.py also rechecks that file e
 the YC candidate pool), so a company that starts hiring again later is automatically added straight
 back - nothing is lost, just set aside while it's not useful.
 
-A single empty day isn't enough to remove a company (network hiccups and one-off ATS failures happen
-- see the "treated the same as empty" note below), which is why this tracks a streak rather than
-acting on the first empty result.
+A single empty day isn't enough to remove a company, which is why this tracks a streak rather than
+acting on the first empty result. A failed fetch (network error, ATS rate-limiting) is neither empty
+nor non-empty: the company is kept and its streak is left unchanged, so an outage can't prune anyone.
 
 Usage:
     python prune.py                    # check all companies, remove those past the threshold
@@ -53,14 +53,14 @@ def save_pruned(companies: list[dict]) -> None:
     PRUNED_FILE.write_text(json.dumps(companies, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def check_one(c: dict) -> tuple[str, int]:
+def check_one(c: dict) -> tuple[str, int | None]:
     key = f"{c['ats']}/{c['slug']}"
     try:
         jobs = careers.fetch_board(c)
         return key, len(jobs)
     except Exception as e:
         print(f"[prune] {c['name']} ({c['ats']}) failed: {e!s:.100}", file=sys.stderr)
-        return key, 0  # counted as "empty today" - the multi-day threshold absorbs one-off failures
+        return key, None  # unknown, not empty - an outage must not push a healthy company towards removal
 
 
 def run(threshold: int = 3, workers: int = 12) -> dict:
@@ -74,10 +74,17 @@ def run(threshold: int = 3, workers: int = 12) -> dict:
     with ThreadPoolExecutor(workers) as pool:
         results = dict(pool.map(check_one, companies))
 
+    # drop streaks for companies no longer tracked (removed or renamed), so the state file doesn't grow stale
+    tracked = {f"{c['ats']}/{c['slug']}" for c in companies}
+    state = {k: v for k, v in state.items() if k in tracked}
+
     keep, remove = [], []
     for c in companies:
         key = f"{c['ats']}/{c['slug']}"
-        n = results.get(key, 0)
+        n = results.get(key)
+        if n is None:  # fetch failed: leave the streak exactly as it was and keep the company
+            keep.append(c)
+            continue
         if n > 0:
             state.pop(key, None)  # has jobs again - reset any streak
             keep.append(c)

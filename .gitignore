@@ -26,3 +26,7 @@ job_scraper.db-*
 .DS_Store
 Thumbs.db
 run_log.txt
+run_id.txt
+
+# Claude Code local state
+.claude/

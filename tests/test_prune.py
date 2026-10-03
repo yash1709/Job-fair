@@ -86,12 +86,23 @@ def test_streak_resets_when_jobs_reappear(sandbox, monkeypatch):
     assert len(careers.load_companies()) == 1, "streak should have reset when jobs reappeared, not carried over"
 
 
-def test_fetch_failure_counts_as_empty_but_does_not_crash(sandbox, monkeypatch):
+def test_fetch_failure_never_prunes_and_keeps_streak(sandbox, monkeypatch):
     careers.save_companies([company("Flaky")])
+    monkeypatch.setattr(careers, "fetch_board", fake_fetch({"Flaky": 0}))
+    prune.run(threshold=3)  # empty day 1
     monkeypatch.setattr(careers, "fetch_board", fake_fetch({"Flaky": -1}))
-    for _ in range(3):
-        result = prune.run(threshold=3)
-    assert result["removed"] and result["removed"][0]["name"] == "Flaky"
+    for _ in range(5):
+        result = prune.run(threshold=3)  # outage: must not count towards the streak
+    assert result["removed"] == []
+    assert list(prune.load_state().values()) == [1]
+
+
+def test_stale_state_keys_are_dropped(sandbox, monkeypatch):
+    careers.save_companies([company("Acme")])
+    prune.save_state({"greenhouse/gone": 2})
+    monkeypatch.setattr(careers, "fetch_board", fake_fetch({"Acme": 3}))
+    prune.run(threshold=3)
+    assert prune.load_state() == {}
 
 
 def test_multiple_companies_handled_independently(sandbox, monkeypatch):
