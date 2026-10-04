@@ -5,8 +5,19 @@
   "slug": "blaxel"
  },
  {
+  "name": "Lytx",
+  "ats": "workday",
+  "slug": "lytx/wd1/Lytx"
+ },
+ {
   "name": "Remi",
   "ats": "greenhouse",
   "slug": "remi"
+ },
+ {
+  "name": "Speechify",
+  "ats": "greenhouse",
+  "slug": "speechify",
+  "india_only": true
  }
 ]

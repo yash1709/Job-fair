@@ -2642,11 +2642,6 @@
   "slug": "lyft"
  },
  {
-  "name": "Lytx",
-  "ats": "workday",
-  "slug": "lytx/wd1/Lytx"
- },
- {
   "name": "Mable",
   "ats": "lever",
   "slug": "mable"
@@ -4243,12 +4238,6 @@
   "name": "Speak",
   "ats": "ashby",
   "slug": "speak"
- },
- {
-  "name": "Speechify",
-  "ats": "greenhouse",
-  "slug": "speechify",
-  "india_only": true
  },
  {
   "name": "Spellbrush",
