@@ -809,6 +809,11 @@
   "slug": "chevron/wd5/jobs"
  },
  {
+  "name": "Chicory",
+  "ats": "greenhouse",
+  "slug": "chicory"
+ },
+ {
   "name": "Chime",
   "ats": "greenhouse",
   "slug": "chime"
@@ -937,6 +942,11 @@
   "name": "Cocoon",
   "ats": "greenhouse",
   "slug": "cocoon"
+ },
+ {
+  "name": "CocuSocial",
+  "ats": "smartrecruiters",
+  "slug": "cocusocial"
  },
  {
   "name": "Codes Health",
@@ -2401,6 +2411,11 @@
   "slug": "kla/wd1/Search"
  },
  {
+  "name": "Klarify",
+  "ats": "ashby",
+  "slug": "klarify"
+ },
+ {
   "name": "KnowBe4",
   "ats": "greenhouse",
   "slug": "knowbe4",
@@ -2843,6 +2858,11 @@
   "india_only": true
  },
  {
+  "name": "ModernLoop",
+  "ats": "smartrecruiters",
+  "slug": "modernloop"
+ },
+ {
   "name": "ModMed",
   "ats": "workday",
   "slug": "modmed/wd501/ModMed12"
@@ -2851,6 +2871,11 @@
   "name": "Modus",
   "ats": "ashby",
   "slug": "modus"
+ },
+ {
+  "name": "Momence",
+  "ats": "greenhouse",
+  "slug": "momence"
  },
  {
   "name": "Momentic",
@@ -3780,6 +3805,11 @@
   "slug": "relace"
  },
  {
+  "name": "Relling",
+  "ats": "ashby",
+  "slug": "relling"
+ },
+ {
   "name": "Remedy",
   "ats": "greenhouse",
   "slug": "remedy"
@@ -3833,6 +3863,11 @@
   "name": "Ripple",
   "ats": "greenhouse",
   "slug": "ripple"
+ },
+ {
+  "name": "Riverbank",
+  "ats": "smartrecruiters",
+  "slug": "riverbank"
  },
  {
   "name": "Rivet",
@@ -4637,6 +4672,11 @@
   "slug": "tremendous"
  },
  {
+  "name": "Trigo",
+  "ats": "smartrecruiters",
+  "slug": "trigo"
+ },
+ {
   "name": "Trimble",
   "ats": "workday",
   "slug": "trimble/wd1/TrimbleCareers"
@@ -4686,6 +4726,11 @@
   "name": "Tuesday Labs",
   "ats": "ashby",
   "slug": "tuesday-labs"
+ },
+ {
+  "name": "Turion Space",
+  "ats": "ashby",
+  "slug": "turion-space"
  },
  {
   "name": "Turtlemint",

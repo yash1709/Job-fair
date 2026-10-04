@@ -1,1 +1,32 @@
-{}
+{
+ "42": {
+  "ats": "smartrecruiters",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "kodo": {
+  "ats": "smartrecruiters",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "lumi": {
+  "ats": "smartrecruiters",
+  "jobs": 6,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "lyra": {
+  "ats": "smartrecruiters",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "voiq": {
+  "ats": "smartrecruiters",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "wren": {
+  "ats": "smartrecruiters",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ }
+}

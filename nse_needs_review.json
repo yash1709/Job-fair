@@ -12,13 +12,13 @@
  },
  "artefact": {
   "ats": "greenhouse",
-  "jobs": 134,
+  "jobs": 137,
   "name": "Artefact",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
  "ashoka": {
   "ats": "lever",
-  "jobs": 8,
+  "jobs": 6,
   "name": "Ashoka Buildcon Limited",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -44,7 +44,7 @@
  },
  "gtv": {
   "ats": "greenhouse",
-  "jobs": 6,
+  "jobs": 7,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "icon": {
@@ -69,13 +69,13 @@
  },
  "lakeshore": {
   "ats": "smartrecruiters",
-  "jobs": 109,
+  "jobs": 111,
   "name": "Lakeshore",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
  "metropolis": {
   "ats": "greenhouse",
-  "jobs": 86,
+  "jobs": 88,
   "name": "Metropolis Healthcare Limited",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -86,12 +86,12 @@
  },
  "mrss": {
   "ats": "lever",
-  "jobs": 2,
+  "jobs": 3,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "ncc": {
   "ats": "smartrecruiters",
-  "jobs": 149,
+  "jobs": 152,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "oal": {
@@ -101,7 +101,7 @@
  },
  "ontic": {
   "ats": "ashby",
-  "jobs": 15,
+  "jobs": 13,
   "name": "Ontic",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -117,22 +117,22 @@
  },
  "sail": {
   "ats": "ashby",
-  "jobs": 5,
+  "jobs": 6,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "sona": {
   "ats": "ashby",
-  "jobs": 15,
+  "jobs": 14,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "srm": {
   "ats": "greenhouse",
-  "jobs": 12,
+  "jobs": 14,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "tcs": {
   "ats": "greenhouse",
-  "jobs": 94,
+  "jobs": 96,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "trf": {
@@ -153,7 +153,7 @@
  },
  "vega": {
   "ats": "ashby",
-  "jobs": 5,
+  "jobs": 3,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  }
 }
