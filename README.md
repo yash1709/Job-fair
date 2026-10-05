@@ -245,7 +245,7 @@ and adds them:
 
 This is deliberately **not** part of the live app: checking thousands of candidates takes 1-2+ hours, far too slow
 and too much load for an hourly refresh or a visitor's request to wait on. Instead, `.github/workflows/discover-
-companies.yml` runs it on a schedule (weekly, Sundays) via GitHub Actions, and commits anything new straight to
+companies.yml` runs it on a schedule (twice weekly: Fridays 8:30 PM and Tuesdays 11:30 PM IST) via GitHub Actions, and commits anything new straight to
 `companies.json` - which Streamlit Community Cloud then picks up on its automatic redeploy. Run it manually too:
 
 ```powershell
@@ -278,21 +278,21 @@ should have some; lacking that, it's discarded outright, no review needed) - and
 
 The mirror image of `discover.py`: nothing above ever *removes* a company, so one that's stopped hiring would sit
 in `companies.json` forever, costing an hourly fetch for nothing. `prune.py` rechecks every company already
-tracked, and any with **no jobs for 3 consecutive daily runs** is moved out of `companies.json` into
+tracked, and any with **no jobs for 6 consecutive runs** (it runs twice a day, so 3 days) is moved out of `companies.json` into
 `pruned_companies.json`. `discover.py` rechecks that file every run too (alongside both candidate pools), so a
 company that starts hiring again later is added straight back automatically - nothing is lost, just set aside
-while it isn't useful. Runs daily via `.github/workflows/prune-companies.yml`.
+while it isn't useful. Runs twice daily (9:30 AM and 7:30 PM IST) via `.github/workflows/prune-companies.yml`.
 
-A single empty day isn't enough to remove a company (a network hiccup or a one-off ATS error looks the same as a
+A single empty run isn't enough to remove a company (a network hiccup or a one-off ATS error looks the same as a
 closed board from here) - `prune_state.json` tracks the current consecutive-empty streak per company, resetting
 to zero the moment jobs reappear.
 
 ```powershell
 python prune.py                    # check all companies, remove those past the threshold
-python prune.py --threshold 5      # require 5 consecutive empty days instead of the default 3
+python prune.py --threshold 8      # require 8 consecutive empty runs instead of the default 6
 ```
 
-Together, `discover.py` (weekly) and `prune.py` (daily) mean `companies.json` always reflects companies with a
+Together, `discover.py` (twice weekly) and `prune.py` (twice daily) mean `companies.json` always reflects companies with a
 *currently* live board - not a frozen snapshot from whenever they were first added, and not cluttered with ones
 that have gone quiet.
 

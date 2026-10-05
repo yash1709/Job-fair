@@ -1,13 +1,14 @@
 name: prune dead company boards
 
 # The mirror image of discover-companies.yml: rechecks every company already in companies.json, and
-# any with no jobs for 3 consecutive daily runs gets moved into pruned_companies.json - so a company
+# any with no jobs for 6 consecutive runs (twice a day = 3 days) gets moved into pruned_companies.json - so a company
 # that's stopped hiring doesn't sit in the live app's list forever costing an hourly fetch for nothing.
 # discover-companies.yml rechecks pruned_companies.json too, so one that starts hiring again later is
 # added straight back automatically.
 on:
   schedule:
-    - cron: "0 4 * * *"  # every day, 04:00 UTC
+    - cron: "0 4 * * *"   # every day, 04:00 UTC (9:30 AM IST)
+    - cron: "0 14 * * *"  # every day, 14:00 UTC (7:30 PM IST)
   workflow_dispatch: {}   # also runnable manually from the Actions tab
 
 permissions:

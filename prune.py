@@ -2,7 +2,7 @@
 
 discover.py only ever adds companies; nothing ever removes one that's stopped hiring, so it would sit
 in the live app's list forever, costing an hourly fetch for nothing. This rechecks every company
-already tracked, and any with no jobs for several consecutive daily runs gets moved out of
+already tracked, and any with no jobs for several consecutive runs gets moved out of
 companies.json into pruned_companies.json. discover.py also rechecks that file each run (alongside
 the YC candidate pool), so a company that starts hiring again later is automatically added straight
 back - nothing is lost, just set aside while it's not useful.
@@ -13,7 +13,7 @@ nor non-empty: the company is kept and its streak is left unchanged, so an outag
 
 Usage:
     python prune.py                    # check all companies, remove those past the threshold
-    python prune.py --threshold 5      # require 5 consecutive empty days instead of the default 3
+    python prune.py --threshold 8      # require 8 consecutive empty runs instead of the default 6
 """
 from __future__ import annotations
 
@@ -63,12 +63,12 @@ def check_one(c: dict) -> tuple[str, int | None]:
         return key, None  # unknown, not empty - an outage must not push a healthy company towards removal
 
 
-def run(threshold: int = 3, workers: int = 12) -> dict:
+def run(threshold: int = 6, workers: int = 12) -> dict:
     """The actual logic, separate from CLI parsing so it's directly callable/testable.
     Returns {"kept": [...], "removed": [...]} for the caller (tests, or main()) to inspect."""
     companies = careers.load_companies()
     state = load_state()
-    print(f"[prune] checking {len(companies)} companies (removing after {threshold} consecutive empty days)",
+    print(f"[prune] checking {len(companies)} companies (removing after {threshold} consecutive empty runs)",
          flush=True)
 
     with ThreadPoolExecutor(workers) as pool:
@@ -113,7 +113,7 @@ def run(threshold: int = 3, workers: int = 12) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--threshold", type=int, default=3, help="consecutive empty days before removing a company")
+    ap.add_argument("--threshold", type=int, default=6, help="consecutive empty runs (2 per day in CI) before removing a company")
     ap.add_argument("--workers", type=int, default=12)
     args = ap.parse_args()
     for stream in (sys.stdout, sys.stderr):

@@ -6,7 +6,8 @@ name: discover new company boards
 # slow and too much load for the app's own hourly refresh loop or for a visitor's request to wait on.
 on:
   schedule:
-    - cron: "0 3 * * 0"  # every Sunday, 03:00 UTC
+    - cron: "0 15 * * 5"  # every Friday, 15:00 UTC (8:30 PM IST)
+    - cron: "0 18 * * 2"  # every Tuesday, 18:00 UTC (11:30 PM IST)
   workflow_dispatch:      # also runnable manually from the Actions tab
     inputs:
       limit:
