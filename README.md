@@ -1,5 +1,11 @@
 # Job Scraper
 
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://job-fair-m6wjhjpkx8atahmotnwyas.streamlit.app/)
+
+[![tests](https://github.com/yash1709/Job-fair/actions/workflows/tests.yml/badge.svg)](https://github.com/yash1709/Job-fair/actions/workflows/tests.yml)
+[![discover new company boards](https://github.com/yash1709/Job-fair/actions/workflows/discover-companies.yml/badge.svg)](https://github.com/yash1709/Job-fair/actions/workflows/discover-companies.yml)
+[![prune dead company boards](https://github.com/yash1709/Job-fair/actions/workflows/prune-companies.yml/badge.svg)](https://github.com/yash1709/Job-fair/actions/workflows/prune-companies.yml)
+
 Searches jobs worldwide and filters them by **role**, **experience** and **location**.
 
 | Source | Key needed | Coverage |
