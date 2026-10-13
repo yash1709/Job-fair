@@ -1035,7 +1035,7 @@ def serpapi_jobs(role: str, locations: list[str] | None = None, days: float | No
         print("[serpapi] SERPAPI_API_KEY not set - skipping.", file=sys.stderr)
         return []
     if not quota.allow("serpapi"):
-        print("[serpapi] daily quota used up - skipping.", file=sys.stderr)
+        print("[serpapi] quota used up - skipping.", file=sys.stderr)
         return []
 
     locations = locations or []

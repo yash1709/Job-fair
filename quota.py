@@ -1,4 +1,4 @@
-"""Daily call-quota tracking for metered free APIs (Jobvetta, Google CSE, Adzuna, Jooble), plus a
+"""Daily (and monthly) call-quota tracking for metered free APIs (Jobvetta, Google CSE, Adzuna, Jooble), plus a
 simple app-wide search rate limit.
 
 Once the app is publicly deployed, these quotas are a shared resource across every visitor, not just
@@ -29,9 +29,12 @@ DAILY_LIMITS: dict[str, int] = {
     "google": int(os.getenv("GOOGLE_DAILY_LIMIT", "100")),
     "adzuna": int(os.getenv("ADZUNA_DAILY_LIMIT", "250")),
     "jooble": int(os.getenv("JOOBLE_DAILY_LIMIT", "500")),
-    # SerpApi's free plan is 100 searches/MONTH, not per day - this tracker only resets daily, so the
-    # default here is a conservative ~90/month spread (3/day) rather than the real monthly cap.
-    "serpapi": int(os.getenv("SERPAPI_DAILY_LIMIT", "3")),
+}
+
+# Caps that reset monthly (UTC calendar month). SerpApi's free plan is 100 searches/MONTH, so a daily
+# counter can't express it: it either wastes most of the month or lets one busy day burn it all.
+MONTHLY_LIMITS: dict[str, int] = {
+    "serpapi": int(os.getenv("SERPAPI_MONTHLY_LIMIT", "100")),
 }
 
 
@@ -39,14 +42,23 @@ def _today() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 
+def _month() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m")
+
+
 def _load() -> dict:
     try:
         data = json.loads(QUOTA_FILE.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            data = {}
     except (FileNotFoundError, ValueError, OSError):
         data = {}
     if data.get("date") != _today():
-        data = {"date": _today(), "counts": {}}
+        data["date"], data["counts"] = _today(), {}
+    if data.get("month") != _month():
+        data["month"], data["month_counts"] = _month(), {}
     data.setdefault("counts", {})
+    data.setdefault("month_counts", {})
     return data
 
 
@@ -60,15 +72,16 @@ def _save(data: dict) -> None:
 def allow(source: str, cost: int = 1) -> bool:
     """True (and records the call) if quota remains, or the source isn't metered. False if the
     day's quota is used up - the caller should skip the call entirely."""
-    limit = DAILY_LIMITS.get(source)
-    if not limit:  # 0 or missing = unmetered
+    daily, monthly = DAILY_LIMITS.get(source), MONTHLY_LIMITS.get(source)
+    if not daily and not monthly:  # 0 or missing = unmetered
         return True
     with _lock:
         data = _load()
-        used = data["counts"].get(source, 0)
-        if used + cost > limit:
+        used, month_used = data["counts"].get(source, 0), data["month_counts"].get(source, 0)
+        if (daily and used + cost > daily) or (monthly and month_used + cost > monthly):
             return False
         data["counts"][source] = used + cost
+        data["month_counts"][source] = month_used + cost
         _save(data)
     return True
 
@@ -77,9 +90,14 @@ def usage() -> dict[str, dict]:
     """{"jobvetta": {"used": 3, "limit": 50, "remaining": 47}, ...} - for a status view."""
     with _lock:
         data = _load()
-    return {src: {"used": data["counts"].get(src, 0), "limit": limit,
-                  "remaining": max(0, limit - data["counts"].get(src, 0))}
-            for src, limit in DAILY_LIMITS.items() if limit}
+    out = {src: {"used": data["counts"].get(src, 0), "limit": limit,
+                 "remaining": max(0, limit - data["counts"].get(src, 0))}
+           for src, limit in DAILY_LIMITS.items() if limit}
+    for src, limit in MONTHLY_LIMITS.items():
+        if limit:
+            used = data["month_counts"].get(src, 0)
+            out[src] = {"used": used, "limit": limit, "remaining": max(0, limit - used), "period": "month"}
+    return out
 
 
 # --- app-wide search rate limit --------------------------------------------------------------
@@ -102,4 +120,27 @@ def metered_sources_allowed() -> bool:
         if len(_search_times) >= MAX_SEARCHES_PER_MINUTE:
             return False
         _search_times.append(now)
+    return True
+
+
+# --- per-client rate limit ---------------------------------------------------------------------
+# The app-wide limit above only protects the metered quotas; this one stops a single client from
+# hammering the public JSON/CSV endpoints (each call fans out to every source).
+
+MAX_REQUESTS_PER_CLIENT_PER_MINUTE = int(os.getenv("MAX_REQUESTS_PER_CLIENT_PER_MINUTE", "30"))
+_client_times: dict[str, list[float]] = {}
+
+
+def client_allowed(client: str) -> bool:
+    now = time.time()
+    with _lock:
+        if len(_client_times) > 5000:  # don't grow forever under many distinct clients
+            for k in [k for k, v in _client_times.items() if not v or now - v[-1] > 60]:
+                del _client_times[k]
+        times = [t for t in _client_times.get(client, []) if now - t <= 60]
+        if len(times) >= MAX_REQUESTS_PER_CLIENT_PER_MINUTE:
+            _client_times[client] = times
+            return False
+        times.append(now)
+        _client_times[client] = times
     return True

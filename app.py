@@ -192,7 +192,7 @@ STATUS_PAGE = """<!doctype html>
 <tr><td>Boards cached</td><td>{{ careers.cached }}</td></tr>
 <tr><td>Currently loading</td><td>{{ careers.loading }} ({{ careers.done }}/{{ careers.total }})</td></tr>
 <tr><td>Boards failing recently</td><td class="{{ 'bad' if careers.failed_recently else 'ok' }}">{{ careers.failed_recently }}</td></tr></table>
-<h2>Daily API quotas</h2>
+<h2>API quotas (daily; SerpApi monthly)</h2>
 <table><tr><th>Source</th><th>Used</th><th>Limit</th><th>Remaining</th></tr>
 {% for src, u in quota.items() %}<tr><td>{{ src }}</td><td>{{ u.used }}</td><td>{{ u.limit }}</td>
  <td class="{{ 'bad' if u.remaining == 0 else 'ok' }}">{{ u.remaining }}</td></tr>{% endfor %}</table>
@@ -355,6 +355,8 @@ def status_page():
 @app.route("/api/search")
 def api_search():
     """JSON equivalent of the search page, for programmatic use: /api/search?role=...&location=..."""
+    if not quota.client_allowed(request.remote_addr or "?"):
+        return jsonify({"error": "too many requests - slow down"}), 429
     q = read_query(request.args)
     if not q["role"]:
         return jsonify({"error": "role is required"}), 400
@@ -369,6 +371,8 @@ def api_search():
 
 @app.route("/download.csv")
 def download_csv():
+    if not quota.client_allowed(request.remote_addr or "?"):
+        return "Too many requests - slow down", 429
     q = read_query(request.args)
     if not q["role"]:
         return "Missing role", 400

@@ -119,3 +119,20 @@ def test_rate_limit_trips_after_max_searches(temp_quota):
     assert temp_quota.metered_sources_allowed() is True
     assert temp_quota.metered_sources_allowed() is True
     assert temp_quota.metered_sources_allowed() is False  # 4th call within the same minute
+
+
+def test_monthly_quota_blocks_even_when_daily_resets(temp_quota):
+    temp_quota.MONTHLY_LIMITS["testmonth"] = 2
+    assert temp_quota.allow("testmonth") is True
+    assert temp_quota.allow("testmonth") is True
+    assert temp_quota.allow("testmonth") is False
+    assert temp_quota.usage()["testmonth"]["remaining"] == 0
+    del temp_quota.MONTHLY_LIMITS["testmonth"]
+
+
+def test_client_rate_limit_is_per_client(temp_quota):
+    temp_quota._client_times.clear()
+    temp_quota.MAX_REQUESTS_PER_CLIENT_PER_MINUTE = 2
+    assert temp_quota.client_allowed("a") and temp_quota.client_allowed("a")
+    assert temp_quota.client_allowed("a") is False
+    assert temp_quota.client_allowed("b") is True
