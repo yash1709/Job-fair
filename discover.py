@@ -293,16 +293,20 @@ def main() -> None:
     if pruned:
         print(f"[discover] rechecking {len(pruned)} previously-pruned companies", flush=True)
 
-        def recheck(c: dict) -> tuple[dict, int]:
+        def recheck(c: dict) -> tuple[dict, int | None]:
             try:
                 return c, len(careers.fetch_board(c))
             except Exception as e:
                 print(f"[discover] recheck of {c['name']} failed: {e!s:.100}", flush=True)
-                return c, 0
+                return c, None  # unknown, not empty (same convention as prune.check_one)
 
         with ThreadPoolExecutor(min(args.workers, len(pruned))) as pool:
             counts = list(pool.map(recheck, pruned))
-        revived = [c for c, n in counts if n > 0]
+        failed = sum(1 for _, n in counts if n is None)
+        if failed:
+            print(f"[discover] {failed} pruned companies couldn't be checked this run - left pruned, "
+                  f"will be retried next run", flush=True)
+        revived = [c for c, n in counts if n]
         if revived:
             existing = existing + revived
             careers.save_companies(existing)
