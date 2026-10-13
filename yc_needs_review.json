@@ -4,6 +4,29 @@
   "jobs": 1,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
+ "autumn": {
+  "ats": "ashby",
+  "jobs": 1,
+  "name": "Autumn",
+  "reason": "board found on ashby, but nothing in it ties it to useautumn.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "clueso": {
+  "ats": "ashby",
+  "jobs": 3,
+  "name": "Clueso",
+  "reason": "board found on ashby, but nothing in it ties it to clueso.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "dodo": {
+  "ats": "ashby",
+  "jobs": 8,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "generalastro": {
+  "ats": "ashby",
+  "jobs": 1,
+  "name": "General Astronautics",
+  "reason": "board found on ashby, but nothing in it ties it to generalastro.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
  "kodo": {
   "ats": "smartrecruiters",
   "jobs": 1,
