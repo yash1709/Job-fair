@@ -45,6 +45,58 @@ def test_short_slug_goes_to_review_instead_of_being_auto_added(monkeypatch):
     assert "abc" in review
 
 
+def test_unverified_owner_goes_to_review_instead_of_being_auto_added(monkeypatch):
+    monkeypatch.setattr(discover, "probe_one", fake_probe({"acme-corp": 3}))
+    monkeypatch.setattr(discover, "_verify_hit", lambda ats, slug: (True, True))
+    accepted, review = discover.discover_pool("TEST", ["acme-corp"], {}, [], lambda slug: "Acme Corp",
+                                              workers=4, limit=None, owner_check=lambda s, a: "no tie to acme.com")
+    assert accepted == []
+    assert review["acme-corp"]["reason"] == "no tie to acme.com"
+
+
+def test_verified_owner_is_auto_added(monkeypatch):
+    monkeypatch.setattr(discover, "probe_one", fake_probe({"acme-corp": 3}))
+    monkeypatch.setattr(discover, "_verify_hit", lambda ats, slug: (True, True))
+    accepted, review = discover.discover_pool("TEST", ["acme-corp"], {}, [], lambda slug: "Acme Corp",
+                                              workers=4, limit=None, owner_check=lambda s, a: None)
+    assert [c["slug"] for c in accepted] == ["acme-corp"]
+    assert review == {}
+
+
+def test_domain_label():
+    assert discover._domain_label("https://www.acme.com/about") == "acme"
+    assert discover._domain_label("http://acme.co.uk") == "acme"
+    assert discover._domain_label("acme.io") == "acme"
+    assert discover._domain_label("localhost") is None
+
+
+def _owner(monkeypatch, site, jobs):
+    monkeypatch.setattr(discover, "yc_website", lambda slug: site)
+    monkeypatch.setattr(discover.careers, "fetch_board", lambda c: jobs)
+    return discover.verify_yc_owner("acme-corp", "greenhouse")
+
+
+def test_verify_owner_accepts_job_on_company_domain(monkeypatch):
+    jobs = [{"url": "https://careers.acme.com/apply/1", "title": "Engineer", "description": ""}]
+    assert _owner(monkeypatch, "https://acme.com", jobs) is None
+
+
+def test_verify_owner_accepts_domain_mentioned_in_description(monkeypatch):
+    jobs = [{"url": "https://boards.greenhouse.io/acme-corp/1", "title": "Engineer",
+             "description": "Join us - see acme.com/careers"}]
+    assert _owner(monkeypatch, "https://acme.com", jobs) is None
+
+
+def test_verify_owner_rejects_colliding_company(monkeypatch):
+    jobs = [{"url": "https://boards.greenhouse.io/acme-corp/1", "title": "Vet Nurse",
+             "description": "Ark Veterinary Hospital, see arkvet.com"}]
+    assert _owner(monkeypatch, "https://acme.com", jobs) is not None
+
+
+def test_verify_owner_rejects_when_website_unknown(monkeypatch):
+    assert _owner(monkeypatch, None, [{"url": "x", "title": "t", "description": ""}]) is not None
+
+
 def test_already_tracked_and_excluded_candidates_are_never_probed(monkeypatch):
     probed = []
 

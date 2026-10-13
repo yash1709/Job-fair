@@ -33,6 +33,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 import requests
 
@@ -156,6 +157,55 @@ def yc_name(slug: str) -> str | None:
     return None
 
 
+def _domain_label(url: str) -> str | None:
+    """'https://www.acme.co.uk/x' -> 'acme' (the registrable name, without www/tld)."""
+    host = (urlparse(url if "//" in url else "//" + url).hostname or "").lower().removeprefix("www.")
+    parts = host.split(".")
+    if len(parts) < 2:
+        return None
+    if len(parts) >= 3 and parts[-2] in ("co", "com", "org", "net", "ac", "gov") and len(parts[-1]) == 2:
+        return parts[-3]
+    return parts[-2]
+
+
+def yc_website(slug: str) -> str | None:
+    """The company's own website, from its YC page (None if the page can't be read or lists none)."""
+    for attempt in range(2):
+        try:
+            r = requests.get(f"https://www.ycombinator.com/companies/{slug}", headers=UA, timeout=T)
+            m = re.search(r"(?:&quot;|\")website(?:&quot;|\"):(?:&quot;|\")(https?://[^&\"]+)", r.text)
+            return m.group(1) if m else None
+        except Exception:
+            continue
+    return None
+
+
+def verify_yc_owner(slug: str, ats: str) -> str | None:
+    """Guards against same-slug collisions (an unrelated company that happens to use the same slug on
+    the same ATS - see yc_excluded.json). Returns None if the board is evidently this YC company's, or a
+    short reason it couldn't be confirmed. Evidence: a job URL on the company's own domain, or its domain
+    name (e.g. "acme" from acme.com) appearing in a job's url/title/description. The ATS-hosted URL alone
+    (boards.greenhouse.io/<slug>/...) proves nothing, since that's just the slug we probed with."""
+    site = yc_website(slug)
+    label = _domain_label(site) if site else None
+    if not label or len(label) < 3:
+        return "couldn't determine the company's own website from its YC page, so can't confirm the board is theirs"
+    try:
+        jobs = careers.fetch_board({"ats": ats, "slug": slug, "name": slug})
+    except Exception:
+        return "couldn't re-fetch the board to confirm it's the right company"
+    for j in jobs:
+        host = (urlparse(j.get("url") or "").hostname or "").lower()
+        if host and not any(h in host for h in ("greenhouse.io", "lever.co", "ashbyhq.com", "smartrecruiters.com")) \
+                and label in host:
+            return None
+        blob = " ".join(str(j.get(k) or "") for k in ("title", "description", "url")).lower()
+        if re.search(rf"(?<![a-z0-9]){re.escape(label)}\.[a-z]{{2,}}", blob):
+            return None
+    return (f"board found on {ats}, but nothing in it ties it to {label}.* (the company's website per YC) - "
+            "possibly an unrelated company on the same slug; verify before adding to companies.json")
+
+
 _nse_names_cache: dict | None = None
 
 
@@ -211,14 +261,17 @@ def _verify_hit(ats: str, slug: str, within_days: int = MAX_HIT_AGE_DAYS) -> tup
 
 def discover_pool(label: str, candidates: list[str], excluded, existing: list[dict],
                   name_resolver, workers: int, limit: int | None,
-                  require_india_location: bool = False) -> tuple[list[dict], dict]:
+                  require_india_location: bool = False, owner_check=None) -> tuple[list[dict], dict]:
     """Checks one candidate pool against every ATS in ATS, returning (accepted, review) - accepted
     companies still need to be appended to companies.json and saved by the caller.
 
     require_india_location=True (the NSE/BSE pool) additionally requires an India-based posting to avoid
     same-slug collisions with unrelated global companies (see _verify_hit), and even then never
     auto-accepts - every hit goes to `review` for a human to confirm, since that signal alone isn't fully
-    reliable either (a real collision was found that still had a genuine, unrelated India office)."""
+    reliable either (a real collision was found that still had a genuine, unrelated India office).
+
+    owner_check(slug, ats) -> None | reason: for pools that auto-accept (YC), a board it can't tie to the
+    company goes to `review` instead of being added."""
     tracked_slugs = {c["slug"].lower() for c in existing}
     tracked_names = {re.sub(r"[^a-z0-9]", "", c["name"].lower()) for c in existing}
 
@@ -270,6 +323,11 @@ def discover_pool(label: str, candidates: list[str], excluded, existing: list[di
                                      "(confirmed collisions found even with an India office) - verify this "
                                      "is really the right company before adding to companies.json"}
             continue
+        if owner_check:
+            unverified = owner_check(slug, ats)
+            if unverified:
+                review[slug] = {"ats": ats, "jobs": n, "name": name, "reason": unverified}
+                continue
         accepted.append({"name": name, "ats": ats, "slug": slug})
     return accepted, review
 
@@ -320,7 +378,7 @@ def main() -> None:
     if "yc" in sources:
         pools.append(dict(label="YC", candidates_file=CANDIDATES_FILE, excluded_file=EXCLUDED_FILE,
                           review_file=REVIEW_FILE, refresh=refresh_candidates, name_resolver=yc_name,
-                          require_india_location=False))
+                          require_india_location=False, owner_check=verify_yc_owner))
     if "nse" in sources:
         pools.append(dict(label="NSE", candidates_file=NSE_CANDIDATES_FILE, excluded_file=NSE_EXCLUDED_FILE,
                           review_file=NSE_REVIEW_FILE, refresh=refresh_nse_candidates, name_resolver=nse_name,
@@ -333,7 +391,8 @@ def main() -> None:
             else {}
 
         accepted, review = discover_pool(pool["label"], candidates, excluded, existing, pool["name_resolver"],
-                                         args.workers, args.limit, pool["require_india_location"])
+                                         args.workers, args.limit, pool["require_india_location"],
+                                         pool.get("owner_check"))
         if accepted:
             existing = existing + accepted
             careers.save_companies(existing)
@@ -346,7 +405,7 @@ def main() -> None:
 
         pool["review_file"].write_text(json.dumps(review, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
         if review:
-            print(f"[discover:{pool['label']}] {len(review)} short-slug hits need manual review - "
+            print(f"[discover:{pool['label']}] {len(review)} hits need manual review - "
                  f"see {pool['review_file'].name}", flush=True)
 
 
