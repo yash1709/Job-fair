@@ -458,3 +458,128 @@ def test_fetch_board_raises_when_never_loaded_and_down(monkeypatch):
     # and a second call right away doesn't hit the network again (failed-board backoff)
     serve(monkeypatch, lambda *a, **k: pytest.fail("should be in backoff"))
     assert careers.fetch_board({"ats": "greenhouse", "slug": "nope", "name": "Nope"}) == []
+
+
+# --- Google Custom Search (job_scraper.google_search / _google_item_to_job) -----------------------
+
+def _g(title, link, snippet="", **pagemap):
+    return {"title": title, "link": link, "snippet": snippet, "pagemap": pagemap}
+
+
+def test_google_title_greenhouse_application_shape():
+    j = js._google_item_to_job(_g("Job Application for Backend Engineer at Acme Corp",
+                                  "https://boards.greenhouse.io/acme/jobs/1", "Build things"))
+    assert (j.title, j.company, j.source) == ("Backend Engineer", "Acme Corp", "google")
+    assert j.url == "https://boards.greenhouse.io/acme/jobs/1" and "Build things" in j.description
+
+
+def test_google_title_linkedin_hiring_shape():
+    j = js._google_item_to_job(_g("Acme hiring Python Developer in Pune, Maharashtra | LinkedIn",
+                                  "https://in.linkedin.com/jobs/view/123"))
+    assert (j.company, j.title, j.location) == ("Acme", "Python Developer", "Pune, Maharashtra")
+
+
+def test_google_dash_title_is_title_then_company_by_default():
+    j = js._google_item_to_job(_g("Data Engineer - Globex", "https://www.workable.com/j/1"))
+    assert (j.title, j.company) == ("Data Engineer", "Globex")
+
+
+@pytest.mark.parametrize("link", ["https://jobs.lever.co/globex/1", "https://jobs.ashbyhq.com/globex/1"])
+def test_google_dash_title_is_company_then_title_on_lever_and_ashby(link):
+    j = js._google_item_to_job(_g("Globex - Data Engineer", link))
+    assert (j.title, j.company) == ("Data Engineer", "Globex")
+
+
+def test_google_company_falls_back_to_slug_in_url():
+    j = js._google_item_to_job(_g("Senior Designer", "https://jobs.lever.co/big-widget-co/abc"))
+    assert j.company == "Big Widget Co" and j.title == "Senior Designer"
+
+
+def test_google_jobposting_markup_overrides_title_parsing():
+    j = js._google_item_to_job(_g("Job Application for Wrong at Wrong", "https://x.com/j",
+                                  jobposting=[{"title": "Right Title", "hiringorganization": "Right Co",
+                                               "joblocation": "Mumbai", "dateposted": "2026-10-01"}]))
+    assert (j.title, j.company, j.location, j.posted) == ("Right Title", "Right Co", "Mumbai", "2026-10-01")
+
+
+def test_google_cleans_ellipsis_pipes_and_html():
+    j = js._google_item_to_job(_g("Job Application for <b>Dev</b>... at Initech | LinkedIn",
+                                  "https://boards.greenhouse.io/initech/1"))
+    assert j.title == "Dev" and j.company == "Initech"
+
+
+def test_google_og_description_is_added_to_description():
+    j = js._google_item_to_job(_g("Dev - Acme", "https://x.com/j", "snippet text",
+                                  metatags=[{"og:description": "meta text"}]))
+    assert "snippet text" in j.description and "meta text" in j.description
+
+
+@pytest.mark.parametrize("item", [{}, {"title": "", "link": ""}, {"pagemap": None}, {"pagemap": {"metatags": []}}])
+def test_google_sparse_or_odd_items_do_not_crash(item):
+    j = js._google_item_to_job(item)
+    assert j.source == "google"
+
+
+def _google_env(monkeypatch):
+    monkeypatch.setenv("GOOGLE_API_KEY", "k")
+    monkeypatch.setenv("GOOGLE_CSE_ID", "cx")
+
+
+def test_google_search_requires_credentials(monkeypatch):
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+    monkeypatch.delenv("GOOGLE_CSE_ID", raising=False)
+    serve(monkeypatch, lambda *a, **k: pytest.fail("must not call the API without credentials"))
+    assert js.google_search("python", None, ["pune"]) == []
+
+
+def test_google_search_skips_when_quota_exhausted(monkeypatch):
+    _google_env(monkeypatch)
+    monkeypatch.setattr(js.quota, "allow", lambda *a, **k: False)
+    serve(monkeypatch, lambda *a, **k: pytest.fail("must not call the API once quota is used up"))
+    assert js.google_search("python", None, ["pune"]) == []
+
+
+def test_google_search_builds_query_and_params_for_india(monkeypatch):
+    _google_env(monkeypatch)
+    seen = []
+    serve(monkeypatch, lambda url, **kw: seen.append(kw["params"]) or FakeResp({"items": []}))
+    js.google_search("python developer", "senior", ["bangalore"], date_restrict="d7")
+    p = seen[0]
+    assert '"python developer"' in p["q"] and '"bangalore"' in p["q"] and "senior" in p["q"]
+    assert "site:" in p["q"]
+    assert p["gl"] == "in"              # Indian location defaults the country
+    assert p["dateRestrict"] == "d7" and p["cx"] == "cx" and p["start"] == 1
+
+
+def test_google_search_mid_level_is_not_added_to_query(monkeypatch):
+    _google_env(monkeypatch)
+    seen = []
+    serve(monkeypatch, lambda url, **kw: seen.append(kw["params"]) or FakeResp({"items": []}))
+    js.google_search("python", "mid", ["pune"])
+    assert " mid" not in seen[0]["q"]
+
+
+def test_google_search_paginates_and_caps_results(monkeypatch):
+    _google_env(monkeypatch)
+    starts = []
+
+    def handler(url, **kw):
+        starts.append(kw["params"]["start"])
+        return FakeResp({"items": [_g(f"Dev {kw['params']['start']}-{i} - Acme", f"https://x.com/{kw['params']['start']}/{i}")
+                                   for i in range(10)]})
+    serve(monkeypatch, handler)
+    jobs = js.google_search("dev", None, ["pune"], max_results=25)
+    assert len(jobs) == 25           # trimmed to max_results
+    assert starts == [1, 11, 21]     # 10 per page, stopped once enough
+
+
+def test_google_search_stops_on_http_error_and_keeps_earlier_pages(monkeypatch):
+    _google_env(monkeypatch)
+
+    def handler(url, **kw):
+        if kw["params"]["start"] == 1:
+            return FakeResp({"items": [_g("Dev - Acme", "https://x.com/1")]})
+        return FakeResp(status=429, text="quota exceeded")
+    serve(monkeypatch, handler)
+    jobs = js.google_search("dev", None, ["pune"])
+    assert [j.url for j in jobs] == ["https://x.com/1"]
