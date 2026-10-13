@@ -64,10 +64,16 @@ def list_saved_searches(visitor_id: str | None = None) -> list[dict]:
     return out
 
 
-def remove_saved_search(sid: str) -> None:
+def remove_saved_search(sid: str, visitor_id: str | None = None) -> bool:
+    """Deletes a saved search. With visitor_id, only if that visitor owns it. True if one was deleted."""
     with _lock, _conn() as c:
-        c.execute("DELETE FROM saved_searches WHERE id=?", (sid,))
-        c.execute("DELETE FROM seen_jobs WHERE search_id=?", (sid,))
+        if visitor_id is None:
+            cur = c.execute("DELETE FROM saved_searches WHERE id=?", (sid,))
+        else:
+            cur = c.execute("DELETE FROM saved_searches WHERE id=? AND visitor_id=?", (sid, visitor_id))
+        if cur.rowcount:
+            c.execute("DELETE FROM seen_jobs WHERE search_id=?", (sid,))
+        return bool(cur.rowcount)
 
 
 def mark_checked(sid: str) -> None:

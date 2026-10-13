@@ -153,9 +153,13 @@ SAVED_SEARCHES_PAGE = """<!doctype html>
  .muted{color:#777;font-size:13px} a.btn{display:inline-block;margin-right:10px;padding:6px 14px;border-radius:6px;
    background:#1a73e8;color:#fff;text-decoration:none;font-size:13px}
  a.btn.danger{background:#c5221f}
+ form.inline{display:inline} button.btn{margin-right:10px;padding:6px 14px;background:#1a73e8;font-size:13px}
+ button.btn.danger{background:#c5221f}
+ .error{background:#fce8e6;color:#c5221f;border-radius:6px;padding:8px 12px;margin-bottom:12px}
 </style></head><body>
 <header><a href="{{ url_for('index') }}">← Job Scraper</a> · <b>Saved searches</b></header>
 <main>
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
 {% if not searches %}<p class="muted">No saved searches yet. Run a search and click "🔔 Save &amp; alert me".</p>{% endif %}
 {% for s in searches %}<div class="card">
  <b>{{ s.query.get('role', '') }}</b> — {{ s.query.get('location', '') or 'anywhere' }}
@@ -163,9 +167,11 @@ SAVED_SEARCHES_PAGE = """<!doctype html>
    Webhook: {{ s.webhook_url or '(none - won\\'t notify anywhere, just tracks new jobs)' }}<br>
    Last checked: {{ s.last_checked_str }}
  </p>
- <a class="btn" href="{{ url_for('check_saved_search', sid=s.id) }}">Check now</a>
- <a class="btn danger" href="{{ url_for('delete_saved_search', sid=s.id) }}"
-   onclick="return confirm('Delete this saved search?')">Delete</a>
+ <form class="inline" method="post" action="{{ url_for('check_saved_search', sid=s.id) }}">
+   <button class="btn" type="submit">Check now</button></form>
+ <form class="inline" method="post" action="{{ url_for('delete_saved_search', sid=s.id) }}"
+   onsubmit="return confirm('Delete this saved search?')">
+   <button class="btn danger" type="submit">Delete</button></form>
 </div>{% endfor %}
 </main></body></html>"""
 
@@ -301,30 +307,40 @@ def index():
 def save_search():
     vid = get_visitor_id()
     q = read_query(request.form)
+    webhook = request.form.get("webhook_url", "").strip()
+    if webhook:
+        bad = alerts.validate_webhook(webhook)
+        if bad:
+            return _saved_searches_response(vid, f"Webhook URL rejected: {bad}"), 400
     if q["role"]:
-        store.add_saved_search(vid, q, request.form.get("webhook_url", "").strip())
+        store.add_saved_search(vid, q, webhook)
     return redirect(url_for("saved_searches"))
 
 
-@app.route("/saved-searches")
-def saved_searches():
-    vid = get_visitor_id()
+def _saved_searches_response(vid: str, error: str = ""):
     searches = store.list_saved_searches(vid)
     for s in searches:
         s["last_checked_str"] = ("never" if not s["last_checked_at"]
                                  else datetime.fromtimestamp(s["last_checked_at"]).strftime("%Y-%m-%d %H:%M"))
-    return render_template_string(SAVED_SEARCHES_PAGE, searches=searches)
+    return render_template_string(SAVED_SEARCHES_PAGE, searches=searches, error=error)
 
 
-@app.route("/saved-searches/<sid>/delete")
+@app.route("/saved-searches")
+def saved_searches():
+    return _saved_searches_response(get_visitor_id())
+
+
+# state-changing, so POST only; and scoped to the visitor's own searches (a saved-search id alone
+# must not be enough to delete or trigger someone else's)
+@app.route("/saved-searches/<sid>/delete", methods=["POST"])
 def delete_saved_search(sid):
-    store.remove_saved_search(sid)
+    store.remove_saved_search(sid, get_visitor_id())
     return redirect(url_for("saved_searches"))
 
 
-@app.route("/saved-searches/<sid>/check")
+@app.route("/saved-searches/<sid>/check", methods=["POST"])
 def check_saved_search(sid):
-    matches = [s for s in store.list_saved_searches() if s["id"] == sid]
+    matches = [s for s in store.list_saved_searches(get_visitor_id()) if s["id"] == sid]
     if matches:
         alerts._run_one(matches[0])
     return redirect(url_for("saved_searches"))

@@ -234,8 +234,12 @@ with tab_search:
                 webhook = st.text_input("Webhook URL (Slack/Discord incoming webhook - optional)",
                                         key="webhook_input")
                 if st.button("Save search"):
-                    store.add_saved_search(VID, meta, webhook.strip())
-                    st.success("Saved — see the 'Saved searches' tab.")
+                    bad = alerts.validate_webhook(webhook.strip()) if webhook.strip() else None
+                    if bad:
+                        st.error(f"Webhook URL rejected: {bad}")
+                    else:
+                        store.add_saved_search(VID, meta, webhook.strip())
+                        st.success("Saved — see the 'Saved searches' tab.")
 
 with tab_saved:
     searches = store.list_saved_searches(VID)
@@ -255,7 +259,7 @@ with tab_saved:
                     alerts._run_one(s)
                 st.rerun()
             if bc2.button("Delete", key=f"del-{s['id']}"):
-                store.remove_saved_search(s["id"])
+                store.remove_saved_search(s["id"], VID)
                 st.rerun()
 
 with tab_status:

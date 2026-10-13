@@ -50,6 +50,38 @@ def test_remove_saved_search(temp_store):
     assert temp_store.list_saved_searches(vid) == []
 
 
+def test_remove_saved_search_only_by_owner(temp_store):
+    owner, other = temp_store.new_visitor_id(), temp_store.new_visitor_id()
+    sid = temp_store.add_saved_search(owner, {"role": "a"})
+    assert temp_store.remove_saved_search(sid, other) is False
+    assert len(temp_store.list_saved_searches(owner)) == 1
+    assert temp_store.remove_saved_search(sid, owner) is True
+    assert temp_store.list_saved_searches(owner) == []
+
+
+@pytest.mark.parametrize("url", [
+    "http://example.com/hook",            # not https
+    "https://127.0.0.1/hook",             # loopback
+    "https://localhost/hook",
+    "https://169.254.169.254/latest",     # cloud metadata
+    "https://10.0.0.5/hook",              # private
+    "https://[::1]/hook",
+    "https://user:pw@example.com/hook",   # credentials
+    "ftp://example.com/hook",
+    "not a url",
+])
+def test_validate_webhook_rejects_unsafe(url):
+    import alerts
+    assert alerts.validate_webhook(url) is not None
+
+
+def test_validate_webhook_accepts_public_https(monkeypatch):
+    import alerts, socket
+    monkeypatch.setattr(socket, "getaddrinfo",
+                        lambda *a, **k: [(socket.AF_INET, 0, 0, "", ("93.184.216.34", 443))])
+    assert alerts.validate_webhook("https://hooks.slack.com/services/T/B/x") is None
+
+
 def test_filter_new_only_reports_unseen_urls_once(temp_store):
     vid = temp_store.new_visitor_id()
     sid = temp_store.add_saved_search(vid, {"role": "a"})
