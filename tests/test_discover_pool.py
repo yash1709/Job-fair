@@ -145,3 +145,47 @@ def test_india_pool_discards_a_hit_with_no_india_posting(monkeypatch):
                                               workers=4, limit=None, require_india_location=True)
     assert accepted == []
     assert review == {}
+
+
+def _yc_page(title, *names):
+    data = "".join(f"&quot;name&quot;:&quot;{n}&quot;," for n in names)
+    return f"<html><head><title>{title}</title></head><body>{data}</body></html>"
+
+
+def test_yc_name_from_simple_title():
+    assert discover.parse_yc_name(_yc_page("Stripe: Economic infrastructure | Y Combinator", "Stripe")) == "Stripe"
+
+
+def test_yc_name_keeps_colon_and_pipe_in_the_real_name():
+    page = _yc_page("Foo: Bar Labs: Tools for devs | Y Combinator", "Foo: Bar Labs")
+    assert discover.parse_yc_name(page) == "Foo: Bar Labs"
+
+
+def test_yc_name_unescapes_html_entities():
+    page = _yc_page("AT&amp;T Labs: Phones | Y Combinator", "AT&amp;T Labs")
+    assert discover.parse_yc_name(page) == "AT&T Labs"
+
+
+def test_yc_name_falls_back_to_title_split_without_json_data():
+    assert discover.parse_yc_name(_yc_page("Scale AI: Data infrastructure | Y Combinator")) == "Scale AI"
+
+
+def test_yc_name_ignores_unrelated_json_name():
+    # the embedded name doesn't match the title (e.g. a founder), so don't trust it
+    page = _yc_page("Acme: Widgets | Y Combinator", "Jane Founder")
+    assert discover.parse_yc_name(page) == "Acme"
+
+
+def test_yc_name_none_for_missing_or_generic_pages():
+    assert discover.parse_yc_name("<html>no title</html>") is None
+    assert discover.parse_yc_name(_yc_page("Y Combinator | File Not Found")) is None
+
+
+def test_yc_name_404_is_not_retried(monkeypatch):
+    calls = []
+
+    class R:
+        status_code, text = 404, "<title>Y Combinator | File Not Found</title>"
+    monkeypatch.setattr(discover.requests, "get", lambda *a, **k: calls.append(1) or R())
+    assert discover.yc_name("gone") is None
+    assert len(calls) == 1

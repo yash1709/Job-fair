@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import html
 import io
 import json
 import re
@@ -142,16 +143,30 @@ def probe_one(task: tuple[str, str]) -> tuple[str, str, int]:
     return slug, ats, 0
 
 
+def parse_yc_name(page: str) -> str | None:
+    """The company name from a YC company page's HTML, or None. The <title> is "Name: tagline | Y Combinator",
+    but splitting it on ":" / "|" cuts names that contain those characters, and it's HTML-escaped ("AT&amp;T").
+    The page also embeds the company's real name in its JSON data, so when the title starts with that, use it
+    verbatim; only otherwise fall back to splitting the title."""
+    m = re.search(r"<title>([^<]+)</title>", page)
+    if not m:
+        return None
+    title = html.unescape(m.group(1)).strip()
+    for raw in re.findall(r"&quot;name&quot;:&quot;(.+?)&quot;", page)[:3]:
+        name = html.unescape(raw).strip()
+        if name and title.startswith(name) and name.lower() != "y combinator":
+            return name
+    name = re.split(r"\s*[:|]\s*", title)[0].strip()
+    return name if name and name.lower() != "y combinator" else None
+
+
 def yc_name(slug: str) -> str | None:
     for attempt in range(2):
         try:
             r = requests.get(f"https://www.ycombinator.com/companies/{slug}", headers=UA, timeout=T)
-            m = re.search(r"<title>([^<]+)</title>", r.text)
-            if m:
-                name = re.split(r"\s*[:|]\s*", m.group(1))[0].strip()
-                if name and name.lower() != "y combinator":
-                    return name
-            return None
+            if r.status_code == 404:
+                return None  # no such page - retrying won't help
+            return parse_yc_name(r.text)
         except Exception:
             continue
     return None
