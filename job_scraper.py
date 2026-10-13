@@ -627,7 +627,7 @@ def _google_item_to_job(it: dict) -> Job:
 
     title = posting.get("title") or title
     company = posting.get("hiringorganization") or company
-    location = posting.get("joblocation") or location or meta.get("og:locale", "")
+    location = posting.get("joblocation") or location  # og:locale is a language code ("en_US"), not a place
 
     return Job(
         title=strip_html(title).replace("...", "").strip(" |-"),

@@ -583,3 +583,8 @@ def test_google_search_stops_on_http_error_and_keeps_earlier_pages(monkeypatch):
     serve(monkeypatch, handler)
     jobs = js.google_search("dev", None, ["pune"])
     assert [j.url for j in jobs] == ["https://x.com/1"]
+
+
+def test_google_og_locale_is_not_used_as_a_location():
+    j = js._google_item_to_job(_g("Dev - Acme", "https://x.com/j", metatags=[{"og:locale": "en_US"}]))
+    assert j.location == ""
