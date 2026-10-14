@@ -1,8 +1,7 @@
 {
  "ashby/thoughtworks": 2,
  "greenhouse/hightouch": 1,
- "ashby/confluent": 3,
- "ashby/prometheus": 3,
- "ashby/runa": 2,
- "lever/culdesac": 1
+ "ashby/confluent": 4,
+ "ashby/runa": 3,
+ "lever/culdesac": 2
 }
