@@ -5,6 +5,11 @@
   "slug": "blaxel"
  },
  {
+  "name": "Confluent",
+  "ats": "ashby",
+  "slug": "confluent"
+ },
+ {
   "name": "Lytx",
   "ats": "workday",
   "slug": "lytx/wd1/Lytx"
