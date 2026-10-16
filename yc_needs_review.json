@@ -10,6 +10,12 @@
   "name": "Autumn",
   "reason": "board found on ashby, but nothing in it ties it to useautumn.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
+ "bitstack": {
+  "ats": "ashby",
+  "jobs": 2,
+  "name": "Bitstack",
+  "reason": "board found on ashby, but nothing in it ties it to bitstack-app.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
  "clueso": {
   "ats": "ashby",
   "jobs": 3,
@@ -23,9 +29,15 @@
  },
  "generalastro": {
   "ats": "ashby",
-  "jobs": 1,
+  "jobs": 5,
   "name": "General Astronautics",
   "reason": "board found on ashby, but nothing in it ties it to generalastro.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "insight": {
+  "ats": "greenhouse",
+  "jobs": 13,
+  "name": "Insight",
+  "reason": "board found on greenhouse, but nothing in it ties it to insightbrowser.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "kodo": {
   "ats": "smartrecruiters",
@@ -41,6 +53,12 @@
   "ats": "smartrecruiters",
   "jobs": 1,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "praxis": {
+  "ats": "greenhouse",
+  "jobs": 4,
+  "name": "Praxis",
+  "reason": "board found on greenhouse, but nothing in it ties it to runpraxis.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "voiq": {
   "ats": "smartrecruiters",

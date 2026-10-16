@@ -3438,6 +3438,11 @@
   "slug": "picktrace"
  },
  {
+  "name": "PicnicAI",
+  "ats": "greenhouse",
+  "slug": "picnicai"
+ },
+ {
   "name": "Pinecone",
   "ats": "ashby",
   "slug": "pinecone"
