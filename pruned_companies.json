@@ -20,6 +20,11 @@
   "slug": "lytx/wd1/Lytx"
  },
  {
+  "name": "Prometheus",
+  "ats": "ashby",
+  "slug": "prometheus"
+ },
+ {
   "name": "Remi",
   "ats": "greenhouse",
   "slug": "remi"
