@@ -15,14 +15,29 @@
   "slug": "confluent"
  },
  {
+  "name": "CSG",
+  "ats": "workday",
+  "slug": "csgi/wd5/CSGCareers"
+ },
+ {
   "name": "Culdesac",
   "ats": "lever",
   "slug": "culdesac"
  },
  {
+  "name": "Genius",
+  "ats": "greenhouse",
+  "slug": "genius"
+ },
+ {
   "name": "Lytx",
   "ats": "workday",
   "slug": "lytx/wd1/Lytx"
+ },
+ {
+  "name": "OpenSea",
+  "ats": "ashby",
+  "slug": "opensea"
  },
  {
   "name": "Prometheus",

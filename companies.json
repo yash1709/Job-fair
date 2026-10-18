@@ -1112,11 +1112,6 @@
   "slug": "crowdstrike/wd5/crowdstrikecareers"
  },
  {
-  "name": "CSG",
-  "ats": "workday",
-  "slug": "csgi/wd5/CSGCareers"
- },
- {
   "name": "CTGT",
   "ats": "ashby",
   "slug": "ctgt"
@@ -1824,11 +1819,6 @@
   "name": "Genesys",
   "ats": "workday",
   "slug": "genesys/wd1/Genesys"
- },
- {
-  "name": "Genius",
-  "ats": "greenhouse",
-  "slug": "genius"
  },
  {
   "name": "GHX",
@@ -3205,11 +3195,6 @@
   "name": "Opennote",
   "ats": "ashby",
   "slug": "opennote"
- },
- {
-  "name": "OpenSea",
-  "ats": "ashby",
-  "slug": "opensea"
  },
  {
   "name": "OpenWork",
