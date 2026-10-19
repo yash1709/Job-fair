@@ -1,6 +1,7 @@
 {
  "ashby/thoughtworks": 2,
  "greenhouse/hightouch": 1,
- "greenhouse/webflow": 5,
- "workday/trimble/wd1/TrimbleCareers": 3
+ "workday/trimble/wd1/TrimbleCareers": 4,
+ "greenhouse/dialpad": 1,
+ "ashby/paid": 1
 }

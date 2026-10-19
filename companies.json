@@ -4995,11 +4995,6 @@
   "slug": "weaviate"
  },
  {
-  "name": "Webflow",
-  "ats": "greenhouse",
-  "slug": "webflow"
- },
- {
   "name": "Wells Fargo",
   "ats": "workday",
   "slug": "wf/wd1/WellsFargoJobs"
