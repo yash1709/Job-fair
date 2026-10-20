@@ -3579,6 +3579,11 @@
   "slug": "prolific"
  },
  {
+  "name": "Prometheus",
+  "ats": "ashby",
+  "slug": "prometheus"
+ },
+ {
   "name": "Promise",
   "ats": "ashby",
   "slug": "promise"
@@ -3850,6 +3855,11 @@
   "slug": "retell-ai"
  },
  {
+  "name": "Retrofit",
+  "ats": "greenhouse",
+  "slug": "retrofit"
+ },
+ {
   "name": "Revel",
   "ats": "ashby",
   "slug": "revel"
@@ -3913,6 +3923,11 @@
   "name": "Rubrik",
   "ats": "greenhouse",
   "slug": "rubrik"
+ },
+ {
+  "name": "Runa",
+  "ats": "ashby",
+  "slug": "runa"
  },
  {
   "name": "Runway",
