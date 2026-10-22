@@ -1227,12 +1227,6 @@
   "slug": "dexcom/wd1/Dexcom"
  },
  {
-  "name": "Dialpad",
-  "ats": "greenhouse",
-  "slug": "dialpad",
-  "india_only": true
- },
- {
   "name": "DigitalOcean",
   "ats": "greenhouse",
   "slug": "digitalocean98",
@@ -3271,11 +3265,6 @@
   "name": "PagerDuty",
   "ats": "greenhouse",
   "slug": "pagerduty"
- },
- {
-  "name": "Paid",
-  "ats": "ashby",
-  "slug": "paid"
  },
  {
   "name": "Palantir",

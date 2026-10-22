@@ -25,6 +25,12 @@
   "slug": "culdesac"
  },
  {
+  "name": "Dialpad",
+  "ats": "greenhouse",
+  "slug": "dialpad",
+  "india_only": true
+ },
+ {
   "name": "Genius",
   "ats": "greenhouse",
   "slug": "genius"
@@ -38,6 +44,11 @@
   "name": "OpenSea",
   "ats": "ashby",
   "slug": "opensea"
+ },
+ {
+  "name": "Paid",
+  "ats": "ashby",
+  "slug": "paid"
  },
  {
   "name": "Remi",

@@ -1,10 +1,8 @@
 {
  "ashby/thoughtworks": 2,
  "greenhouse/hightouch": 1,
- "greenhouse/dialpad": 5,
- "ashby/paid": 5,
- "ashby/paragon": 4,
- "ashby/rutter": 4,
- "ashby/atrato": 3,
- "greenhouse/carbonchain": 1
+ "ashby/paragon": 5,
+ "ashby/rutter": 5,
+ "ashby/atrato": 4,
+ "greenhouse/carbonchain": 2
 }
