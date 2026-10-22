@@ -51,9 +51,19 @@
   "slug": "paid"
  },
  {
+  "name": "Paragon",
+  "ats": "ashby",
+  "slug": "paragon"
+ },
+ {
   "name": "Remi",
   "ats": "greenhouse",
   "slug": "remi"
+ },
+ {
+  "name": "Rutter",
+  "ats": "ashby",
+  "slug": "rutter"
  },
  {
   "name": "Webflow",
