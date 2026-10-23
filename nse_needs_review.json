@@ -4,6 +4,11 @@
   "jobs": 5,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
+ "apex": {
+  "ats": "greenhouse",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
  "aries": {
   "ats": "ashby",
   "jobs": 6,
@@ -44,7 +49,7 @@
  },
  "hercules": {
   "ats": "ashby",
-  "jobs": 23,
+  "jobs": 24,
   "name": "Hercules",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -55,12 +60,12 @@
  },
  "iex": {
   "ats": "greenhouse",
-  "jobs": 11,
+  "jobs": 10,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "iris": {
   "ats": "greenhouse",
-  "jobs": 3,
+  "jobs": 2,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "kacl": {
@@ -70,13 +75,13 @@
  },
  "lakeshore": {
   "ats": "smartrecruiters",
-  "jobs": 118,
+  "jobs": 112,
   "name": "Lakeshore",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
  "metropolis": {
   "ats": "greenhouse",
-  "jobs": 92,
+  "jobs": 100,
   "name": "Metropolis Healthcare Limited",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -92,7 +97,7 @@
  },
  "ncc": {
   "ats": "smartrecruiters",
-  "jobs": 128,
+  "jobs": 146,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "oal": {
@@ -123,7 +128,7 @@
  },
  "sona": {
   "ats": "ashby",
-  "jobs": 14,
+  "jobs": 11,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "srm": {
@@ -148,13 +153,13 @@
  },
  "unified": {
   "ats": "greenhouse",
-  "jobs": 6,
+  "jobs": 7,
   "name": "Unified",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
  "vega": {
   "ats": "ashby",
-  "jobs": 5,
+  "jobs": 6,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  }
 }

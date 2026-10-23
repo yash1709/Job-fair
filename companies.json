@@ -2626,6 +2626,11 @@
   "slug": "lyft"
  },
  {
+  "name": "Lytx",
+  "ats": "workday",
+  "slug": "lytx/wd1/Lytx"
+ },
+ {
   "name": "Mable",
   "ats": "lever",
   "slug": "mable"
@@ -3461,6 +3466,11 @@
   "name": "Plume",
   "ats": "greenhouse",
   "slug": "plume"
+ },
+ {
+  "name": "Pocket",
+  "ats": "ashby",
+  "slug": "pocket"
  },
  {
   "name": "Pocket FM",
