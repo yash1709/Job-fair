@@ -10,6 +10,11 @@
   "slug": "blaxel"
  },
  {
+  "name": "CarbonChain",
+  "ats": "greenhouse",
+  "slug": "carbonchain"
+ },
+ {
   "name": "Confluent",
   "ats": "ashby",
   "slug": "confluent"
