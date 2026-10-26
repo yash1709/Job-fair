@@ -41,6 +41,11 @@
   "slug": "genius"
  },
  {
+  "name": "New Story",
+  "ats": "ashby",
+  "slug": "new-story"
+ },
+ {
   "name": "OpenSea",
   "ats": "ashby",
   "slug": "opensea"
