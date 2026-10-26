@@ -71,6 +71,11 @@
   "slug": "rutter"
  },
  {
+  "name": "Sorcerer",
+  "ats": "ashby",
+  "slug": "sorcerer"
+ },
+ {
   "name": "Webflow",
   "ats": "greenhouse",
   "slug": "webflow"
