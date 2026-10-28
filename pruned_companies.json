@@ -76,6 +76,11 @@
   "slug": "sorcerer"
  },
  {
+  "name": "Subsets",
+  "ats": "ashby",
+  "slug": "subsets"
+ },
+ {
   "name": "Webflow",
   "ats": "greenhouse",
   "slug": "webflow"

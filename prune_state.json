@@ -1,7 +1,7 @@
 {
  "ashby/thoughtworks": 2,
  "greenhouse/hightouch": 1,
- "ashby/subsets": 5,
- "greenhouse/orca": 1,
- "ashby/permutive": 1
+ "greenhouse/orca": 2,
+ "ashby/permutive": 2,
+ "greenhouse/kite": 1
 }
