@@ -24,7 +24,7 @@
  },
  "brighterway": {
   "ats": "ashby",
-  "jobs": 8,
+  "jobs": 10,
   "name": "Brighterway",
   "reason": "board found on ashby, but nothing in it ties it to brighterway.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -34,14 +34,14 @@
   "name": "Clueso",
   "reason": "board found on ashby, but nothing in it ties it to clueso.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
- "doe": {
-  "ats": "ashby",
-  "jobs": 3,
-  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
- },
  "dodo": {
   "ats": "ashby",
   "jobs": 6,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "doe": {
+  "ats": "ashby",
+  "jobs": 3,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "insight": {
@@ -52,7 +52,7 @@
  },
  "kiwi": {
   "ats": "ashby",
-  "jobs": 6,
+  "jobs": 5,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "kodo": {
@@ -78,7 +78,7 @@
  },
  "magic": {
   "ats": "ashby",
-  "jobs": 9,
+  "jobs": 10,
   "name": "Magic",
   "reason": "board found on ashby, but nothing in it ties it to getmagic.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -88,23 +88,34 @@
   "name": "Morph",
   "reason": "board found on greenhouse, but nothing in it ties it to morphllm.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
+ "orca": {
+  "ats": "ashby",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
  "praxis": {
   "ats": "greenhouse",
-  "jobs": 9,
+  "jobs": 10,
   "name": "Praxis",
   "reason": "board found on greenhouse, but nothing in it ties it to runpraxis.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "superserve": {
+  "ats": "greenhouse",
+  "jobs": 1,
+  "name": "Superserve",
+  "reason": "board found on greenhouse, but nothing in it ties it to superserve.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "sweetspot": {
+  "ats": "ashby",
+  "jobs": 1,
+  "name": "Sweetspot",
+  "reason": "board found on ashby, but nothing in it ties it to sweetspot.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "sycamore": {
   "ats": "ashby",
   "jobs": 3,
   "name": "Sycamore",
   "reason": "board found on ashby, but nothing in it ties it to mysycamore.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
- },
- "syntheticfi": {
-  "ats": "ashby",
-  "jobs": 1,
-  "name": "SyntheticFi",
-  "reason": "board found on ashby, but nothing in it ties it to syntheticfi.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "tolmo": {
   "ats": "ashby",
@@ -119,13 +130,13 @@
  },
  "webflow": {
   "ats": "ashby",
-  "jobs": 17,
+  "jobs": 18,
   "name": "Webflow",
   "reason": "board found on ashby, but nothing in it ties it to webflow.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "wonderly": {
   "ats": "ashby",
-  "jobs": 7,
+  "jobs": 6,
   "name": "Wonderly",
   "reason": "board found on ashby, but nothing in it ties it to wonderly.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },

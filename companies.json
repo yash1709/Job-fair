@@ -3257,6 +3257,11 @@
   "slug": "pagerduty"
  },
  {
+  "name": "Paid",
+  "ats": "ashby",
+  "slug": "paid"
+ },
+ {
   "name": "Palantir",
   "ats": "lever",
   "slug": "palantir"
