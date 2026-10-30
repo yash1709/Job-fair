@@ -1,10 +1,9 @@
 {
  "ashby/thoughtworks": 2,
  "greenhouse/hightouch": 1,
- "greenhouse/orca": 4,
- "ashby/permutive": 4,
- "greenhouse/kite": 3,
- "workday/generalmotors/wd5/Careers_GM": 1,
- "workday/harman/wd3/HARMAN": 1,
- "workday/netflix/wd108/Netflix": 1
+ "greenhouse/orca": 5,
+ "ashby/permutive": 5,
+ "greenhouse/kite": 4,
+ "workday/harman/wd3/HARMAN": 2,
+ "workday/netflix/wd108/Netflix": 2
 }
