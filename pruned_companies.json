@@ -51,6 +51,11 @@
   "slug": "opensea"
  },
  {
+  "name": "Orca",
+  "ats": "greenhouse",
+  "slug": "orca"
+ },
+ {
   "name": "Paid",
   "ats": "ashby",
   "slug": "paid"
@@ -59,6 +64,11 @@
   "name": "Paragon",
   "ats": "ashby",
   "slug": "paragon"
+ },
+ {
+  "name": "Permutive",
+  "ats": "ashby",
+  "slug": "permutive"
  },
  {
   "name": "Remi",

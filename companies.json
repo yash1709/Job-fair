@@ -3206,11 +3206,6 @@
   "slug": "eeho.fa.us2.oraclecloud.com/CX_45001"
  },
  {
-  "name": "Orca",
-  "ats": "greenhouse",
-  "slug": "orca"
- },
- {
   "name": "Orchestra",
   "ats": "greenhouse",
   "slug": "orchestra"
@@ -3350,11 +3345,6 @@
   "name": "PermitFlow",
   "ats": "ashby",
   "slug": "permitflow"
- },
- {
-  "name": "Permutive",
-  "ats": "ashby",
-  "slug": "permutive"
  },
  {
   "name": "Perplexity",
