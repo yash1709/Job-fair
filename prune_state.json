@@ -1,9 +1,10 @@
 {
  "ashby/thoughtworks": 2,
  "greenhouse/hightouch": 1,
- "greenhouse/kite": 5,
- "workday/harman/wd3/HARMAN": 3,
- "workday/netflix/wd108/Netflix": 3,
- "ashby/mem0": 1,
- "ashby/pipekit": 1
+ "workday/harman/wd3/HARMAN": 4,
+ "workday/netflix/wd108/Netflix": 4,
+ "ashby/mem0": 2,
+ "ashby/pipekit": 2,
+ "ashby/coperniq": 1,
+ "greenhouse/seer": 1
 }
