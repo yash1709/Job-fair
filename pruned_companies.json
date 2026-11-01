@@ -41,9 +41,19 @@
   "slug": "genius"
  },
  {
+  "name": "Harman",
+  "ats": "workday",
+  "slug": "harman/wd3/HARMAN"
+ },
+ {
   "name": "Kite",
   "ats": "greenhouse",
   "slug": "kite"
+ },
+ {
+  "name": "Netflix",
+  "ats": "workday",
+  "slug": "netflix/wd108/Netflix"
  },
  {
   "name": "New Story",

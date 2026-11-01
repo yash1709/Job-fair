@@ -1998,11 +1998,6 @@
   "slug": "happl"
  },
  {
-  "name": "Harman",
-  "ats": "workday",
-  "slug": "harman/wd3/HARMAN"
- },
- {
   "name": "Harness",
   "ats": "greenhouse",
   "slug": "harnessinc",
@@ -2970,11 +2965,6 @@
   "name": "Neo4j",
   "ats": "greenhouse",
   "slug": "neo4j"
- },
- {
-  "name": "Netflix",
-  "ats": "workday",
-  "slug": "netflix/wd108/Netflix"
  },
  {
   "name": "Netomi",
