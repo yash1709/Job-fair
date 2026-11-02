@@ -51,6 +51,11 @@
   "slug": "kite"
  },
  {
+  "name": "Mem0",
+  "ats": "ashby",
+  "slug": "mem0"
+ },
+ {
   "name": "Netflix",
   "ats": "workday",
   "slug": "netflix/wd108/Netflix"
@@ -79,6 +84,11 @@
   "name": "Permutive",
   "ats": "ashby",
   "slug": "permutive"
+ },
+ {
+  "name": "Pipekit",
+  "ats": "ashby",
+  "slug": "pipekit"
  },
  {
   "name": "Remi",

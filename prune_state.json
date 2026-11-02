@@ -1,8 +1,6 @@
 {
  "ashby/thoughtworks": 2,
  "greenhouse/hightouch": 1,
- "ashby/mem0": 5,
- "ashby/pipekit": 5,
- "ashby/coperniq": 4,
- "greenhouse/seer": 4
+ "ashby/coperniq": 5,
+ "greenhouse/seer": 5
 }
