@@ -20,6 +20,11 @@
   "slug": "confluent"
  },
  {
+  "name": "Coperniq",
+  "ats": "ashby",
+  "slug": "coperniq"
+ },
+ {
   "name": "CSG",
   "ats": "workday",
   "slug": "csgi/wd5/CSGCareers"
@@ -99,6 +104,11 @@
   "name": "Rutter",
   "ats": "ashby",
   "slug": "rutter"
+ },
+ {
+  "name": "Seer",
+  "ats": "greenhouse",
+  "slug": "seer"
  },
  {
   "name": "Sorcerer",

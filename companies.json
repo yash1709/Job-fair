@@ -1051,11 +1051,6 @@
   "slug": "conveo"
  },
  {
-  "name": "Coperniq",
-  "ats": "ashby",
-  "slug": "coperniq"
- },
- {
   "name": "Copia",
   "ats": "lever",
   "slug": "copia"
@@ -3977,11 +3972,6 @@
   "name": "Seed",
   "ats": "greenhouse",
   "slug": "seed"
- },
- {
-  "name": "Seer",
-  "ats": "greenhouse",
-  "slug": "seer"
  },
  {
   "name": "Sendbird",
