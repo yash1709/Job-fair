@@ -340,6 +340,11 @@
   "slug": "aspora"
  },
  {
+  "name": "Assemble",
+  "ats": "ashby",
+  "slug": "assemble"
+ },
+ {
   "name": "Assembly",
   "ats": "ashby",
   "slug": "assembly"
@@ -2719,6 +2724,11 @@
   "name": "Meesho",
   "ats": "lever",
   "slug": "meesho"
+ },
+ {
+  "name": "Mem0",
+  "ats": "ashby",
+  "slug": "mem0"
  },
  {
   "name": "Mercator",

@@ -1,10 +1,5 @@
 [
  {
-  "name": "Assemble",
-  "ats": "ashby",
-  "slug": "assemble"
- },
- {
   "name": "Blaxel",
   "ats": "ashby",
   "slug": "blaxel"
@@ -54,11 +49,6 @@
   "name": "Kite",
   "ats": "greenhouse",
   "slug": "kite"
- },
- {
-  "name": "Mem0",
-  "ats": "ashby",
-  "slug": "mem0"
  },
  {
   "name": "Netflix",

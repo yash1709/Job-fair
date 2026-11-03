@@ -17,7 +17,7 @@
  },
  "artefact": {
   "ats": "greenhouse",
-  "jobs": 146,
+  "jobs": 147,
   "name": "Artefact",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -34,7 +34,7 @@
  },
  "bcp": {
   "ats": "greenhouse",
-  "jobs": 4,
+  "jobs": 5,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "dci": {
@@ -49,7 +49,7 @@
  },
  "hercules": {
   "ats": "ashby",
-  "jobs": 27,
+  "jobs": 30,
   "name": "Hercules",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -65,23 +65,18 @@
  },
  "iris": {
   "ats": "greenhouse",
-  "jobs": 4,
-  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
- },
- "kacl": {
-  "ats": "lever",
-  "jobs": 1,
+  "jobs": 5,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "lakeshore": {
   "ats": "smartrecruiters",
-  "jobs": 95,
+  "jobs": 82,
   "name": "Lakeshore",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
  "metropolis": {
   "ats": "greenhouse",
-  "jobs": 99,
+  "jobs": 102,
   "name": "Metropolis Healthcare Limited",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -92,12 +87,12 @@
  },
  "ncc": {
   "ats": "smartrecruiters",
-  "jobs": 157,
+  "jobs": 128,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "oal": {
   "ats": "greenhouse",
-  "jobs": 6,
+  "jobs": 7,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "ontic": {
@@ -108,7 +103,7 @@
  },
  "rain": {
   "ats": "ashby",
-  "jobs": 35,
+  "jobs": 37,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "rupa": {
@@ -123,12 +118,12 @@
  },
  "sona": {
   "ats": "ashby",
-  "jobs": 12,
+  "jobs": 13,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "srm": {
   "ats": "greenhouse",
-  "jobs": 18,
+  "jobs": 19,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "tcl": {
@@ -138,7 +133,7 @@
  },
  "tcs": {
   "ats": "greenhouse",
-  "jobs": 95,
+  "jobs": 91,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "trf": {
