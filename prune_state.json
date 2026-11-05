@@ -1,9 +1,8 @@
 {
  "ashby/thoughtworks": 2,
  "greenhouse/hightouch": 1,
- "lever/bolster": 5,
- "ashby/centralize": 5,
- "greenhouse/golf": 3,
- "ashby/lingodotdev": 2,
- "ashby/conductor": 1
+ "greenhouse/golf": 4,
+ "ashby/lingodotdev": 3,
+ "ashby/conductor": 2,
+ "greenhouse/workato": 1
 }

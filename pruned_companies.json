@@ -5,9 +5,19 @@
   "slug": "blaxel"
  },
  {
+  "name": "Bolster",
+  "ats": "lever",
+  "slug": "bolster"
+ },
+ {
   "name": "CarbonChain",
   "ats": "greenhouse",
   "slug": "carbonchain"
+ },
+ {
+  "name": "Centralize",
+  "ats": "ashby",
+  "slug": "centralize"
  },
  {
   "name": "Confluent",

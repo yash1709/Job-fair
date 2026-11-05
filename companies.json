@@ -577,11 +577,6 @@
   "slug": "bluedot"
  },
  {
-  "name": "Bolster",
-  "ats": "lever",
-  "slug": "bolster"
- },
- {
   "name": "Boom",
   "ats": "ashby",
   "slug": "boom"
@@ -755,11 +750,6 @@
   "name": "Celonis",
   "ats": "greenhouse",
   "slug": "celonis"
- },
- {
-  "name": "Centralize",
-  "ats": "ashby",
-  "slug": "centralize"
  },
  {
   "name": "Cerebras",
