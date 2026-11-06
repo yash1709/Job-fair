@@ -51,6 +51,11 @@
   "slug": "genius"
  },
  {
+  "name": "Golf",
+  "ats": "greenhouse",
+  "slug": "golf"
+ },
+ {
   "name": "Harman",
   "ats": "workday",
   "slug": "harman/wd3/HARMAN"
