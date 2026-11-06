@@ -687,6 +687,11 @@
   "slug": "capy"
  },
  {
+  "name": "CarbonChain",
+  "ats": "greenhouse",
+  "slug": "carbonchain"
+ },
+ {
   "name": "Cardboard",
   "ats": "ashby",
   "slug": "cardboard"
@@ -750,6 +755,11 @@
   "name": "Celonis",
   "ats": "greenhouse",
   "slug": "celonis"
+ },
+ {
+  "name": "Centralize",
+  "ats": "ashby",
+  "slug": "centralize"
  },
  {
   "name": "Cerebras",
@@ -1095,6 +1105,11 @@
   "name": "CrowdStrike",
   "ats": "workday",
   "slug": "crowdstrike/wd5/crowdstrikecareers"
+ },
+ {
+  "name": "CSG",
+  "ats": "workday",
+  "slug": "csgi/wd5/CSGCareers"
  },
  {
   "name": "CTGT",
@@ -3315,6 +3330,11 @@
   "name": "PermitFlow",
   "ats": "ashby",
   "slug": "permitflow"
+ },
+ {
+  "name": "Permutive",
+  "ats": "ashby",
+  "slug": "permutive"
  },
  {
   "name": "Perplexity",

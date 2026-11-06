@@ -10,16 +10,6 @@
   "slug": "bolster"
  },
  {
-  "name": "CarbonChain",
-  "ats": "greenhouse",
-  "slug": "carbonchain"
- },
- {
-  "name": "Centralize",
-  "ats": "ashby",
-  "slug": "centralize"
- },
- {
   "name": "Confluent",
   "ats": "ashby",
   "slug": "confluent"
@@ -28,11 +18,6 @@
   "name": "Coperniq",
   "ats": "ashby",
   "slug": "coperniq"
- },
- {
-  "name": "CSG",
-  "ats": "workday",
-  "slug": "csgi/wd5/CSGCareers"
  },
  {
   "name": "Culdesac",
@@ -94,11 +79,6 @@
   "name": "Paragon",
   "ats": "ashby",
   "slug": "paragon"
- },
- {
-  "name": "Permutive",
-  "ats": "ashby",
-  "slug": "permutive"
  },
  {
   "name": "Pipekit",
