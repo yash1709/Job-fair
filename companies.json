@@ -1009,11 +1009,6 @@
   "slug": "concourse"
  },
  {
-  "name": "Conductor",
-  "ats": "ashby",
-  "slug": "conductor"
- },
- {
   "name": "Conduit",
   "ats": "ashby",
   "slug": "conduit"

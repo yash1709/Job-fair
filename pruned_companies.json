@@ -10,6 +10,11 @@
   "slug": "bolster"
  },
  {
+  "name": "Conductor",
+  "ats": "ashby",
+  "slug": "conductor"
+ },
+ {
   "name": "Confluent",
   "ats": "ashby",
   "slug": "confluent"
