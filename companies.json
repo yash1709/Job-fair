@@ -4975,12 +4975,6 @@
   "slug": "within"
  },
  {
-  "name": "Workato",
-  "ats": "greenhouse",
-  "slug": "workato",
-  "india_only": true
- },
- {
   "name": "Workday",
   "ats": "workday",
   "slug": "workday/wd5/Workday"
