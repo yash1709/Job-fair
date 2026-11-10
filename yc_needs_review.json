@@ -6,7 +6,7 @@
  },
  "alma": {
   "ats": "ashby",
-  "jobs": 24,
+  "jobs": 22,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "autumn": {
@@ -47,9 +47,15 @@
  },
  "cointracker": {
   "ats": "ashby",
-  "jobs": 1,
+  "jobs": 3,
   "name": "CoinTracker",
   "reason": "board found on ashby, but nothing in it ties it to cointracker.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "complif": {
+  "ats": "ashby",
+  "jobs": 5,
+  "name": "Complif",
+  "reason": "board found on ashby, but nothing in it ties it to complif.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "dodo": {
   "ats": "ashby",
@@ -69,9 +75,14 @@
  },
  "insight": {
   "ats": "greenhouse",
-  "jobs": 11,
+  "jobs": 7,
   "name": "Insight",
   "reason": "board found on greenhouse, but nothing in it ties it to insightbrowser.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "kite": {
+  "ats": "ashby",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "kiwi": {
   "ats": "ashby",
@@ -88,6 +99,12 @@
   "jobs": 1,
   "name": "Lucid Bots",
   "reason": "board found on ashby, but nothing in it ties it to lucidbots.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "luminal": {
+  "ats": "ashby",
+  "jobs": 5,
+  "name": "Luminal",
+  "reason": "board found on ashby, but nothing in it ties it to luminal.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "lumi": {
   "ats": "smartrecruiters",
@@ -113,9 +130,15 @@
  },
  "nectar": {
   "ats": "ashby",
-  "jobs": 22,
+  "jobs": 25,
   "name": "Nectar",
   "reason": "board found on ashby, but nothing in it ties it to nectarclimate.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "optimizely": {
+  "ats": "smartrecruiters",
+  "jobs": 40,
+  "name": "Optimizely",
+  "reason": "board found on smartrecruiters, but nothing in it ties it to optimizely.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "orca": {
   "ats": "ashby",
@@ -130,7 +153,7 @@
  },
  "proto": {
   "ats": "greenhouse",
-  "jobs": 3,
+  "jobs": 4,
   "name": "Proto",
   "reason": "board found on greenhouse, but nothing in it ties it to prototypes.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -148,15 +171,26 @@
  },
  "sycamore": {
   "ats": "ashby",
-  "jobs": 15,
+  "jobs": 14,
   "name": "Sycamore",
   "reason": "board found on ashby, but nothing in it ties it to mysycamore.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "theo": {
+  "ats": "ashby",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "tolmo": {
   "ats": "ashby",
   "jobs": 5,
   "name": "Tolmo",
   "reason": "board found on ashby, but nothing in it ties it to tolmo.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "variance": {
+  "ats": "ashby",
+  "jobs": 9,
+  "name": "Variance",
+  "reason": "board found on ashby, but nothing in it ties it to variance.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "voiq": {
   "ats": "smartrecruiters",
@@ -165,7 +199,7 @@
  },
  "webflow": {
   "ats": "ashby",
-  "jobs": 22,
+  "jobs": 23,
   "name": "Webflow",
   "reason": "board found on ashby, but nothing in it ties it to webflow.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
