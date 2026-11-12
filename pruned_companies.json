@@ -56,6 +56,12 @@
   "slug": "kite"
  },
  {
+  "name": "Learneo",
+  "ats": "greenhouse",
+  "slug": "learneo",
+  "india_only": true
+ },
+ {
   "name": "Lingo.dev",
   "ats": "ashby",
   "slug": "lingodotdev"
