@@ -5,11 +5,6 @@
   "slug": "blaxel"
  },
  {
-  "name": "Bolster",
-  "ats": "lever",
-  "slug": "bolster"
- },
- {
   "name": "Conductor",
   "ats": "ashby",
   "slug": "conductor"
@@ -82,11 +77,6 @@
   "slug": "netflix/wd108/Netflix"
  },
  {
-  "name": "New Story",
-  "ats": "ashby",
-  "slug": "new-story"
- },
- {
   "name": "OpenSea",
   "ats": "ashby",
   "slug": "opensea"
@@ -145,11 +135,5 @@
   "name": "Webflow",
   "ats": "greenhouse",
   "slug": "webflow"
- },
- {
-  "name": "Workato",
-  "ats": "greenhouse",
-  "slug": "workato",
-  "india_only": true
  }
 ]

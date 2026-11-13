@@ -9,6 +9,12 @@
   "jobs": 1,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
+ "apollo": {
+  "ats": "ashby",
+  "jobs": 45,
+  "name": "Apollo Micro Systems Limited",
+  "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
+ },
  "aries": {
   "ats": "ashby",
   "jobs": 6,
@@ -70,24 +76,24 @@
  },
  "kacl": {
   "ats": "lever",
-  "jobs": 3,
+  "jobs": 4,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "lakeshore": {
   "ats": "smartrecruiters",
-  "jobs": 82,
+  "jobs": 78,
   "name": "Lakeshore",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
  "metropolis": {
   "ats": "greenhouse",
-  "jobs": 96,
+  "jobs": 97,
   "name": "Metropolis Healthcare Limited",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
  "mos": {
   "ats": "greenhouse",
-  "jobs": 3,
+  "jobs": 4,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "ncc": {
@@ -102,13 +108,13 @@
  },
  "ontic": {
   "ats": "ashby",
-  "jobs": 15,
+  "jobs": 14,
   "name": "Ontic",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
  "rain": {
   "ats": "ashby",
-  "jobs": 43,
+  "jobs": 45,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "rupa": {
@@ -128,12 +134,12 @@
  },
  "srm": {
   "ats": "greenhouse",
-  "jobs": 22,
+  "jobs": 21,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "tcl": {
   "ats": "greenhouse",
-  "jobs": 10,
+  "jobs": 8,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "tcs": {
