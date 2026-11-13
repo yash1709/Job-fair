@@ -56,6 +56,11 @@
   "slug": "kite"
  },
  {
+  "name": "Klarify",
+  "ats": "ashby",
+  "slug": "klarify"
+ },
+ {
   "name": "Learneo",
   "ats": "greenhouse",
   "slug": "learneo",
@@ -110,6 +115,11 @@
   "name": "Rutter",
   "ats": "ashby",
   "slug": "rutter"
+ },
+ {
+  "name": "Sample",
+  "ats": "greenhouse",
+  "slug": "sample"
  },
  {
   "name": "Seer",

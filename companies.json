@@ -2375,11 +2375,6 @@
   "slug": "kla/wd1/Search"
  },
  {
-  "name": "Klarify",
-  "ats": "ashby",
-  "slug": "klarify"
- },
- {
   "name": "KnowBe4",
   "ats": "greenhouse",
   "slug": "knowbe4",
@@ -3926,11 +3921,6 @@
   "name": "Salient",
   "ats": "ashby",
   "slug": "salient"
- },
- {
-  "name": "Sample",
-  "ats": "greenhouse",
-  "slug": "sample"
  },
  {
   "name": "Samsara",

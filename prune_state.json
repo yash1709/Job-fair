@@ -1,10 +1,9 @@
 {
  "ashby/thoughtworks": 2,
  "greenhouse/hightouch": 1,
- "ashby/klarify": 5,
- "greenhouse/sample": 5,
- "greenhouse/laika": 4,
- "ashby/clearly-ai": 3,
- "ashby/ekho": 3,
- "ashby/lark": 3
+ "greenhouse/laika": 5,
+ "ashby/clearly-ai": 4,
+ "ashby/ekho": 4,
+ "ashby/lark": 4,
+ "ashby/runa": 1
 }
