@@ -884,11 +884,6 @@
   "slug": "clear"
  },
  {
-  "name": "Clearly AI",
-  "ats": "ashby",
-  "slug": "clearly-ai"
- },
- {
   "name": "Clever",
   "ats": "greenhouse",
   "slug": "clever"
@@ -1368,11 +1363,6 @@
   "name": "Edwin",
   "ats": "ashby",
   "slug": "edwin"
- },
- {
-  "name": "Ekho",
-  "ats": "ashby",
-  "slug": "ekho"
  },
  {
   "name": "Elastic",
@@ -2455,11 +2445,6 @@
   "name": "Lapel",
   "ats": "ashby",
   "slug": "lapel"
- },
- {
-  "name": "Lark",
-  "ats": "ashby",
-  "slug": "lark"
  },
  {
   "name": "Latent",

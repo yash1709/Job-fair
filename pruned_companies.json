@@ -5,6 +5,11 @@
   "slug": "blaxel"
  },
  {
+  "name": "Clearly AI",
+  "ats": "ashby",
+  "slug": "clearly-ai"
+ },
+ {
   "name": "Conductor",
   "ats": "ashby",
   "slug": "conductor"
@@ -29,6 +34,11 @@
   "ats": "greenhouse",
   "slug": "dialpad",
   "india_only": true
+ },
+ {
+  "name": "Ekho",
+  "ats": "ashby",
+  "slug": "ekho"
  },
  {
   "name": "Genius",
@@ -59,6 +69,11 @@
   "name": "LAIKA",
   "ats": "greenhouse",
   "slug": "laika"
+ },
+ {
+  "name": "Lark",
+  "ats": "ashby",
+  "slug": "lark"
  },
  {
   "name": "Learneo",
