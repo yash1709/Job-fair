@@ -6,12 +6,12 @@
  },
  "alma": {
   "ats": "ashby",
-  "jobs": 27,
+  "jobs": 26,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "apollo": {
   "ats": "ashby",
-  "jobs": 45,
+  "jobs": 46,
   "name": "Apollo",
   "reason": "board found on ashby, but nothing in it ties it to apollographql.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -114,7 +114,7 @@
  },
  "lumi": {
   "ats": "smartrecruiters",
-  "jobs": 6,
+  "jobs": 3,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "lyra": {
@@ -124,7 +124,7 @@
  },
  "magic": {
   "ats": "ashby",
-  "jobs": 11,
+  "jobs": 9,
   "name": "Magic",
   "reason": "board found on ashby, but nothing in it ties it to getmagic.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -136,13 +136,13 @@
  },
  "nectar": {
   "ats": "ashby",
-  "jobs": 26,
+  "jobs": 25,
   "name": "Nectar",
   "reason": "board found on ashby, but nothing in it ties it to nectarclimate.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "optimizely": {
   "ats": "smartrecruiters",
-  "jobs": 41,
+  "jobs": 43,
   "name": "Optimizely",
   "reason": "board found on smartrecruiters, but nothing in it ties it to optimizely.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -171,13 +171,18 @@
  },
  "render": {
   "ats": "ashby",
-  "jobs": 37,
+  "jobs": 36,
   "name": "Render",
   "reason": "board found on ashby, but nothing in it ties it to tryrender.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
+ "sfox": {
+  "ats": "greenhouse",
+  "jobs": 1,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
  "sweetspot": {
   "ats": "ashby",
-  "jobs": 1,
+  "jobs": 5,
   "name": "Sweetspot",
   "reason": "board found on ashby, but nothing in it ties it to sweetspot.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -189,7 +194,7 @@
  },
  "theo": {
   "ats": "ashby",
-  "jobs": 1,
+  "jobs": 2,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "tolmo": {
@@ -211,7 +216,7 @@
  },
  "webflow": {
   "ats": "ashby",
-  "jobs": 24,
+  "jobs": 29,
   "name": "Webflow",
   "reason": "board found on ashby, but nothing in it ties it to webflow.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
