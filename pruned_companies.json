@@ -56,6 +56,11 @@
   "slug": "harman/wd3/HARMAN"
  },
  {
+  "name": "Infera",
+  "ats": "ashby",
+  "slug": "infera"
+ },
+ {
   "name": "Kite",
   "ats": "greenhouse",
   "slug": "kite"
@@ -140,6 +145,11 @@
   "name": "Seer",
   "ats": "greenhouse",
   "slug": "seer"
+ },
+ {
+  "name": "Simplify",
+  "ats": "ashby",
+  "slug": "simplify"
  },
  {
   "name": "Sorcerer",
