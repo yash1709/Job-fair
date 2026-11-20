@@ -2360,6 +2360,11 @@
   "slug": "kla/wd1/Search"
  },
  {
+  "name": "Klarify",
+  "ats": "ashby",
+  "slug": "klarify"
+ },
+ {
   "name": "KnowBe4",
   "ats": "greenhouse",
   "slug": "knowbe4",
@@ -3931,6 +3936,11 @@
   "name": "Seed",
   "ats": "greenhouse",
   "slug": "seed"
+ },
+ {
+  "name": "Seer",
+  "ats": "greenhouse",
+  "slug": "seer"
  },
  {
   "name": "Sendbird",

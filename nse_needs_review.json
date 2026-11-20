@@ -11,7 +11,7 @@
  },
  "apollo": {
   "ats": "ashby",
-  "jobs": 46,
+  "jobs": 47,
   "name": "Apollo Micro Systems Limited",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -23,7 +23,7 @@
  },
  "artefact": {
   "ats": "greenhouse",
-  "jobs": 150,
+  "jobs": 151,
   "name": "Artefact",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -35,12 +35,17 @@
  },
  "baba": {
   "ats": "ashby",
-  "jobs": 13,
+  "jobs": 12,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "bcp": {
   "ats": "greenhouse",
   "jobs": 5,
+  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "dcm": {
+  "ats": "lever",
+  "jobs": 1,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "dci": {
@@ -66,28 +71,22 @@
  },
  "iex": {
   "ats": "greenhouse",
-  "jobs": 7,
+  "jobs": 9,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "iris": {
   "ats": "greenhouse",
-  "jobs": 6,
+  "jobs": 7,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "kacl": {
   "ats": "lever",
-  "jobs": 3,
+  "jobs": 4,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
- },
- "lakeshore": {
-  "ats": "smartrecruiters",
-  "jobs": 81,
-  "name": "Lakeshore",
-  "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
  "metropolis": {
   "ats": "greenhouse",
-  "jobs": 96,
+  "jobs": 89,
   "name": "Metropolis Healthcare Limited",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -98,7 +97,7 @@
  },
  "ncc": {
   "ats": "smartrecruiters",
-  "jobs": 116,
+  "jobs": 128,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "oal": {
@@ -108,7 +107,7 @@
  },
  "ontic": {
   "ats": "ashby",
-  "jobs": 15,
+  "jobs": 13,
   "name": "Ontic",
   "reason": "has an India-based posting, but ticker-slug matches are unreliable (confirmed collisions found even with an India office) - verify this is really the right company before adding to companies.json"
  },
@@ -129,17 +128,17 @@
  },
  "sona": {
   "ats": "ashby",
-  "jobs": 14,
+  "jobs": 15,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "srm": {
   "ats": "greenhouse",
-  "jobs": 19,
+  "jobs": 17,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "tcl": {
   "ats": "greenhouse",
-  "jobs": 7,
+  "jobs": 8,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "tcs": {

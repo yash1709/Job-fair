@@ -71,11 +71,6 @@
   "slug": "kite"
  },
  {
-  "name": "Klarify",
-  "ats": "ashby",
-  "slug": "klarify"
- },
- {
   "name": "LAIKA",
   "ats": "greenhouse",
   "slug": "laika"
@@ -145,11 +140,6 @@
   "name": "Sample",
   "ats": "greenhouse",
   "slug": "sample"
- },
- {
-  "name": "Seer",
-  "ats": "greenhouse",
-  "slug": "seer"
  },
  {
   "name": "Simplify",
