@@ -157,6 +157,11 @@
   "slug": "subsets"
  },
  {
+  "name": "Teleo",
+  "ats": "lever",
+  "slug": "teleo"
+ },
+ {
   "name": "Webflow",
   "ats": "greenhouse",
   "slug": "webflow"
