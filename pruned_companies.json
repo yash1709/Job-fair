@@ -155,5 +155,11 @@
   "name": "Webflow",
   "ats": "greenhouse",
   "slug": "webflow"
+ },
+ {
+  "name": "Workato",
+  "ats": "greenhouse",
+  "slug": "workato",
+  "india_only": true
  }
 ]
