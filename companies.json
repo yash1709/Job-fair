@@ -3135,6 +3135,11 @@
   "slug": "opennote"
  },
  {
+  "name": "OpenSea",
+  "ats": "ashby",
+  "slug": "opensea"
+ },
+ {
   "name": "OpenWork",
   "ats": "greenhouse",
   "slug": "openwork"
@@ -3846,6 +3851,11 @@
   "name": "Rubrik",
   "ats": "greenhouse",
   "slug": "rubrik"
+ },
+ {
+  "name": "Runa",
+  "ats": "ashby",
+  "slug": "runa"
  },
  {
   "name": "Runway",

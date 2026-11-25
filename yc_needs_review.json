@@ -11,7 +11,7 @@
  },
  "apollo": {
   "ats": "ashby",
-  "jobs": 47,
+  "jobs": 46,
   "name": "Apollo",
   "reason": "board found on ashby, but nothing in it ties it to apollographql.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -39,12 +39,6 @@
   "name": "Brighterway",
   "reason": "board found on ashby, but nothing in it ties it to brighterway.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
- "cherry": {
-  "ats": "greenhouse",
-  "jobs": 1,
-  "name": "Cherry",
-  "reason": "board found on greenhouse, but nothing in it ties it to startcherry.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
- },
  "clueso": {
   "ats": "ashby",
   "jobs": 3,
@@ -63,17 +57,17 @@
   "name": "Complif",
   "reason": "board found on ashby, but nothing in it ties it to complif.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
+ "craniometrix": {
+  "ats": "ashby",
+  "jobs": 1,
+  "name": "Craniometrix",
+  "reason": "board found on ashby, but nothing in it ties it to craniometrix.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
  "crowdvolt": {
   "ats": "ashby",
   "jobs": 3,
   "name": "CrowdVolt",
   "reason": "board found on ashby, but nothing in it ties it to crowdvolt.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
- },
- "current": {
-  "ats": "greenhouse",
-  "jobs": 4,
-  "name": "Current",
-  "reason": "board found on greenhouse, but nothing in it ties it to joincurrent.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "dodo": {
   "ats": "ashby",
@@ -86,14 +80,14 @@
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "fours": {
-  "ats": "lever",
-  "jobs": 17,
+  "ats": "ashby",
+  "jobs": 6,
   "name": "Fours",
-  "reason": "board found on lever, but nothing in it ties it to fours.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+  "reason": "board found on ashby, but nothing in it ties it to fours.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "insight": {
   "ats": "greenhouse",
-  "jobs": 4,
+  "jobs": 5,
   "name": "Insight",
   "reason": "board found on greenhouse, but nothing in it ties it to insightbrowser.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -140,12 +134,6 @@
   "name": "Magic",
   "reason": "board found on ashby, but nothing in it ties it to getmagic.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
- "morph": {
-  "ats": "greenhouse",
-  "jobs": 4,
-  "name": "Morph",
-  "reason": "board found on greenhouse, but nothing in it ties it to morphllm.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
- },
  "nectar": {
   "ats": "ashby",
   "jobs": 25,
@@ -154,7 +142,7 @@
  },
  "optimizely": {
   "ats": "smartrecruiters",
-  "jobs": 44,
+  "jobs": 43,
   "name": "Optimizely",
   "reason": "board found on smartrecruiters, but nothing in it ties it to optimizely.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
@@ -165,15 +153,9 @@
  },
  "praxis": {
   "ats": "greenhouse",
-  "jobs": 8,
+  "jobs": 6,
   "name": "Praxis",
   "reason": "board found on greenhouse, but nothing in it ties it to runpraxis.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
- },
- "proto": {
-  "ats": "greenhouse",
-  "jobs": 1,
-  "name": "Proto",
-  "reason": "board found on greenhouse, but nothing in it ties it to prototypes.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "quartzy": {
   "ats": "lever",
@@ -183,14 +165,9 @@
  },
  "render": {
   "ats": "ashby",
-  "jobs": 37,
+  "jobs": 39,
   "name": "Render",
   "reason": "board found on ashby, but nothing in it ties it to tryrender.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
- },
- "sfox": {
-  "ats": "greenhouse",
-  "jobs": 1,
-  "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
  },
  "sweetspot": {
   "ats": "ashby",
@@ -200,14 +177,26 @@
  },
  "sycamore": {
   "ats": "ashby",
-  "jobs": 15,
+  "jobs": 12,
   "name": "Sycamore",
   "reason": "board found on ashby, but nothing in it ties it to mysycamore.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
- "theo": {
+ "teleo": {
   "ats": "ashby",
   "jobs": 2,
+  "name": "Teleo",
+  "reason": "board found on ashby, but nothing in it ties it to teleo.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
+ },
+ "theo": {
+  "ats": "ashby",
+  "jobs": 1,
   "reason": "slug shorter than 5 chars - higher risk of being an unrelated company's board"
+ },
+ "tinfoil": {
+  "ats": "greenhouse",
+  "jobs": 3,
+  "name": "Tinfoil",
+  "reason": "board found on greenhouse, but nothing in it ties it to tinfoil.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
  "tolmo": {
   "ats": "ashby",
@@ -228,7 +217,7 @@
  },
  "webflow": {
   "ats": "ashby",
-  "jobs": 30,
+  "jobs": 31,
   "name": "Webflow",
   "reason": "board found on ashby, but nothing in it ties it to webflow.* (the company's website per YC) - possibly an unrelated company on the same slug; verify before adding to companies.json"
  },
