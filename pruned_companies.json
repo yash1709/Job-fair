@@ -152,6 +152,11 @@
   "slug": "teleo"
  },
  {
+  "name": "Vorticity",
+  "ats": "ashby",
+  "slug": "vorticity"
+ },
+ {
   "name": "Webflow",
   "ats": "greenhouse",
   "slug": "webflow"
