@@ -166,5 +166,10 @@
   "ats": "greenhouse",
   "slug": "workato",
   "india_only": true
+ },
+ {
+  "name": "Zerocater",
+  "ats": "greenhouse",
+  "slug": "zerocater"
  }
 ]
